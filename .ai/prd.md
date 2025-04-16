@@ -33,7 +33,7 @@ Wyszukiwanie filmów i seriali przy użyciu licznych kryteriów jest czasochłon
    
 7. Integracja z modułem AI:
    - Połączenie z API modelu LLM do generacji rekomendacji na podstawie zadanych kryteriów.
-   - Brak dodatkowych testów weryfikujących poprawność działania AI na etapie MVP.
+   - Lomunikat o błędzie w przypadku problemów z API lub braku odpowiedzi modelu.
 
 8. Wymagania prawne i ograniczenia:
    - Dane osobowe użytkowników i filmów przechowywane zgodnie z RODO.
@@ -88,6 +88,7 @@ Kryteria akceptacji:
 - Użytkownik naciska przycisk "Rekomendowane filmy" po ustawieniu kryteriów wyszukiwania.
 - System komunikuje się z API modelu LLM i wyświetla listę filmów odpowiadających zadanym kryteriom.
 - Lista filmów pojawia się poniżej formularza kryteriów w formie kart filmowych.
+- W przypadku problemów z API lub braku odpowiedzi modelu użytkownik zobaczy stosowny komunikat o błędzie.
 
 US-006  
 Tytuł: Przeglądanie listy rekomendowanych filmów  
