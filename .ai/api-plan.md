@@ -37,7 +37,7 @@
           "actors": ["Leonardo DiCaprio"],
           "director": "Christopher Nolan",
           "status": "to-watch",
-          "generation_id": "123e4567-e89b-12d3-a456-426614174000"
+          "generation_id": 123
         },
         {
           "title": "The Dark Knight",
@@ -47,7 +47,7 @@
           "actors": ["Christian Bale", "Heath Ledger"],
           "director": "Christopher Nolan",
           "status": "to-watch",
-          "generation_id": "123e4567-e89b-12d3-a456-426614174000"
+          "generation_id": 123
         }
       ]
     }
