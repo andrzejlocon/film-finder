@@ -63,12 +63,8 @@ export type RecommendedFilmDTO = Pick<FilmDTO, "title" | "year" | "description" 
 // Contains recommended films and generation metadata
 export interface RecommendationResponseDTO {
   recommendations: RecommendedFilmDTO[];
-  generation_metadata: {
-    generation_id: number;
-    model: string;
-    generation_duration: number;
-    generated_count: number;
-  };
+  generation_id: number;
+  generated_count: number;
 }
 
 // DTO for film status logs

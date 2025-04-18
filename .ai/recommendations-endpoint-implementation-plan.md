@@ -32,11 +32,8 @@ Punkt końcowy umożliwia generowanie rekomendacji filmowych przy użyciu AI. U�
 - **Kod sukcesu**: 200 OK
 - **Response Body**: JSON z następującą strukturą:
   - `recommendations`: Tablica obiektów typu `RecommendedFilmDTO`.
-  - `generation_metadata`: Obiekt zawierający informacje o generacji, np.:
-    - `generation_id`
-    - `model`
-    - `generation_duration`
-    - `generated_count`    
+  - `generation_id`: ID generacji
+  - `generated_count`: Ilość generacji    
 
 ## 5. Przepływ danych
 1. Klient wysyła żądanie POST na `/recommendations` z opcjonalnym polem `criteria`.
