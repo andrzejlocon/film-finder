@@ -63,12 +63,14 @@ export class RecommendationService {
           .from("user_preferences")
           .select("*")
           .eq("user_id", DEFAULT_USER_ID)
-          .single();
+          .maybeSingle();
 
-        if (preferencesError) {
+        // Only throw if it's a real error, not just missing preferences
+        if (preferencesError && preferencesError.code !== "PGRST116") {
           throw new Error(`Failed to fetch user preferences: ${preferencesError.message}`);
         }
 
+        // If we have preferences, use them as criteria
         if (preferences) {
           criteria = {
             genres: preferences.genres || undefined,
