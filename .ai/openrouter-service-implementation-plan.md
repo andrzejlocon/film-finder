@@ -1,85 +1,98 @@
 # Przewodnik wdrożenia usługi OpenRouter
 
 ## 1. Opis usługi
-Usługa OpenRouter to integracja z API OpenRouter, mająca na celu uzupełnienie czatów opartych na LLM. Jej głównym zadaniem jest:
-- Komunikacja z interfejsem API OpenRouter w celu wysyłania zapytań i odbierania odpowiedzi.
-- Formatowanie wiadomości wysyłanych do API, obejmujące komunikat systemowy, komunikat użytkownika, zdefiniowany schemat odpowiedzi (response_format), nazwę modelu oraz parametry modelu.
-- Walidacja struktury odpowiedzi przy użyciu ściśle zdefiniowanego JSON Schema.
-- Obsługa błędów oraz logowanie, zapewniające niezawodność i bezpieczeństwo komunikacji.
+Usługa OpenRouter umożliwia integrację z interfejsem API OpenRouter w celu uzupełnienia czatów opartych na LLM (Large Language Model). Główne zadania usługi to:
+1. Wysyłanie zapytań do API zawierających komunikat systemowy i komunikat użytkownika.
+2. Przetwarzanie odpowiedzi zgodnie z ściśle określonym formatem (response_format) opartym na JSON Schema.
+3. Konfiguracja nazwy modelu oraz parametrów modelu, takich jak temperatura, top_p, frequency_penalty i presence_penalty.
+4. Obsługa błędów, logowanie oraz zapewnienie bezpieczeństwa komunikacji.
 
 ## 2. Opis konstruktora
-Konstruktor usługi inicjalizuje:
-1. Konfigurację klienta API (adres bazowy, klucz API, timeout, retry mechanism).
-2. Domyślne komunikaty systemowe i użytkownika, które będą wysyłane jako część zapytań.
-3. Parametry modelu, takie jak nazwa modelu (np. "gpt-4"), temperatura, maksymalna liczba tokenów oraz inne ustawienia specyficzne dla OpenRouter API.
-4. Schemat `response_format` wykorzystywany do walidacji odpowiedzi:
-   ```
-   { type: 'json_schema', json_schema: { name: 'ChatResponse', strict: true, schema: { message: 'string', status: 'string', code: 'number', additionalInfo: { type: 'object' } } } }
-   ```
-5. Inicjalizację mechanizmów logowania oraz przechwytywania błędów.
+Konstruktor usługi inicjalizuje wszystkie kluczowe komponenty, w tym:
+1. **Klient API OpenRouter** – odpowiedzialny za:
+   - Konfigurację adresu endpointu,
+   - Ustawienie timeout i mechanizmu ponawiania (retry),
+   - Autoryzację z użyciem tokena przechowywanego w zmiennych środowiskowych.
+2. **Manager czatu** – łączy komunikaty systemowe i użytkownika, budując właściwy payload dla API.
+3. **Konfigurator parametrów modelu i response_format** – ustala domyślne wartości:
+   - Nazwa modelu (np. `gpt-4`),
+   - Parametry modelu (np. temperature: 1.0, top_p: 1.0, frequency_penalty: 0.0, presence_penalty: 0.0),
+   - Schemat odpowiedzi (response_format) z walidacją poprzez JSON Schema.
 
 ## 3. Publiczne metody i pola
-1. `sendChatRequest(payload)`
-   - Wysyła zapytanie do API OpenRouter, łącząc komunikat systemowy, komunikat użytkownika oraz parametry modelu.
-2. `setModelConfig(config)`
-   - Aktualizuje konfigurację modelu (np. zmianę nazwy modelu czy parametrów takich jak temperatura).
-3. `getLastResponse()`
-   - Zwraca ostatnią odpowiedź otrzymaną z API.
-4. Pole `responseFormat`
-   - Publiczne pole zawierające zdefiniowany schemat walidacji odpowiedzi:
-     ```
-     { type: 'json_schema', json_schema: { name: 'ChatResponse', strict: true, schema: { message: 'string', status: 'string', code: 'number', additionalInfo: { type: 'object' } } } }
-     ```
+Usługa udostępnia następujące publiczne metody i pola:
+1. `sendChatRequest(message: string): Promise<Response>`
+   - Łączy komunikat systemowy i komunikat użytkownika, wysyła żądanie do API i zwraca przetworzoną odpowiedź.
+2. `setModelParameters(params: ModelParameters): void`
+   - Aktualizuje konfigurację modelu (nazwa, temperatura, top_p, frequency_penalty, presence_penalty).
+3. Publiczne pola przechowujące aktualną konfigurację API, parametry modelu oraz ustawienia response_format.
 
 ## 4. Prywatne metody i pola
-1. `_buildRequestPayload()`
-   - Prywatna metoda, która buduje obiekt zapytania łączący:
-     a. Komunikat systemowy (np. "System: Initial system prompt for context")
-     b. Komunikat użytkownika (np. "User: Example question from a client")
-     c. Parametry modelu (np. nazwa modelu, temperature, maxTokens)
-2. `_validateResponse(response)`
-   - Waliduje otrzymaną odpowiedź zgodnie z `responseFormat`.
-3. `_handleError(error)`
-   - Zarządza błędami, loguje je oraz generuje przyjazne komunikaty dla użytkowników.
+Kluczowe elementy wewnętrzne usługi obejmują:
+1. `_buildRequestPayload(): RequestPayload`
+   - Buduje obiekt zapytania poprzez łączenie:
+     - **Komunikatu systemowego:** np. `{ role: 'system', content: 'This is the system prompt to set context.' }`
+     - **Komunikatu użytkownika:** np. `{ role: 'user', content: 'User message goes here.' }`
+     - **Parametrów modelu:** np. `{ temperature: 1.0, top_p: 1.0, frequency_penalty: 0.0, presence_penalty: 0.0 }`
+2. `_parseResponse(response: any): ParsedResponse`
+   - Waliduje i parsuje odpowiedź przy użyciu zdefiniowanego schematu response_format.
+3. `_handleError(error: Error): void`
+   - Centralizuje obsługę błędów (sieciowych, API, walidacji) oraz logowanie zdarzeń.
 4. Prywatne pole `_apiClient`
-   - Instancja klienta HTTP odpowiedzialna za komunikację z API OpenRouter.
+   - Instancja klienta HTTP służąca do komunikacji z API OpenRouter.
 
 ## 5. Obsługa błędów
-Obsługa błędów powinna uwzględniać następujące scenariusze:
-1. Błąd sieci (timeout, brak połączenia):
-   - Implementacja mechanizmu retry oraz ustawienie odpowiednich timeoutów.
-2. Błędy zwracane przez API (np. nieautoryzowany dostęp, błędna konfiguracja):
-   - Analiza kodów HTTP oraz wyświetlanie informacji o błędach klientowi.
-3. Błąd walidacji odpowiedzi (niespełnienie schematu `response_format`):
-   - Zgłoszenie błędu w przypadku niezgodności struktury odpowiedzi oraz przekazanie informacji do logowania.
-4. Nieoczekiwane wyjątki:
-   - Globalny handler błędów wychwytujący wszelkie nieprzewidziane zachowania, logujący oraz informujący o problemie.
+Potencjalne scenariusze błędów oraz proponowane rozwiązania:
+1. **Błąd sieciowy (timeout, brak połączenia):**
+   - Implementacja mechanizmu retry oraz odpowiednich timeoutów.
+2. **Błąd autoryzacji (nieprawidłowy lub wygasły token):**
+   - Walidacja tokena przed wysłaniem żądania i szybkie zgłoszenie błędu autoryzacji.
+3. **Niezgodność formatu odpowiedzi:**
+   - Walidacja otrzymanej odpowiedzi przy użyciu JSON Schema, z fallback na wartości domyślne lub zgłoszeniem błędu.
+4. **Błąd przetwarzania danych:**
+   - Wczesne przechwytywanie wyjątku poprzez `_handleError` oraz logowanie szczegółowych informacji o błędzie.
 
 ## 6. Kwestie bezpieczeństwa
-1. Bezpieczne przechowywanie kluczy API:
-   - Użycie zmiennych środowiskowych.
-2. Rate limiting i retry:
-   - Zabezpieczenie przed nadużyciem API poprzez ograniczenie liczby żądań i implementację retry.
+Kluczowe aspekty bezpieczeństwa to:
+1. Przechowywanie wrażliwych danych (klucze API, tokeny) w bezpiecznych zmiennych środowiskowych.
+2. Implementacja rate limiting oraz mechanizmów retry, aby utrzymać stabilność serwisu.
 
 ## 7. Plan wdrożenia krok po kroku
-1. **Konfiguracja środowiska**
-   - Instalacja zależności: Astro 5, TypeScript 5, React 19, Tailwind 4 oraz Shadcn/ui.
+1. **Konfiguracja środowiska:**
+   - Instalacja zależności: Astro 5, TypeScript 5, React 19, Tailwind 4, Shadcn/ui.
    - Konfiguracja zmiennych środowiskowych, w tym klucza API do OpenRouter.
-2. **Implementacja modułu klienta API OpenRouter**
-   - Utworzenie modułu odpowiedzialnego za budowanie zapytań i komunikację HTTP z API OpenRouter.
-   - Implementacja mechanizmów retry, timeout oraz obsługi statusów HTTP.
-3. **Implementacja menedżera czatu**
-   - Stworzenie logiki łączenia komunikatów systemowych i użytkownika w jeden obiekt zapytania za pomocą metody `_buildRequestPayload()`.
-   - Implementacja metod publicznych, takich jak `sendChatRequest` oraz `getLastResponse`.
-4. **Implementacja formatu odpowiedzi**
-   - Zdefiniowanie schematu `response_format` i implementacja walidacji odpowiedzi przy użyciu `_validateResponse(response)`.
-   - Użycie wzoru:
-     ```
-     { type: 'json_schema', json_schema: { name: 'ChatResponse', strict: true, schema: { message: 'string', status: 'string', code: 'number', additionalInfo: { type: 'object' } } } }
-     ```
-5. **Implementacja obsługi błędów**
-   - Stworzenie prywatnej metody `_handleError(error)`, która zarządza wszystkimi scenariuszami błędów (sieci, API, walidacja, wyjątki).
+2. **Implementacja modułu klienta API OpenRouter:**
+   - Utworzenie modułu odpowiedzialnego za budowanie zapytań HTTP, ustawienie endpointu, tokena oraz timeout.
+   - Implementacja mechanizmu retry dla nieudanych połączeń.
+3. **Implementacja modułu menedżera czatu:**
+   - Opracowanie logiki łączenia komunikatów przy użyciu metody `_buildRequestPayload()`.
+   - Implementacja metod publicznych, takich jak `sendChatRequest`.
+4. **Konfiguracja komunikatów dla API:**
+   - **Komunikat systemowy:**
+     1. Przykład: `{ role: 'system', content: 'This is the system prompt to set context.' }`
+   - **Komunikat użytkownika:**
+     2. Przykład: `{ role: 'user', content: 'User message goes here.' }`
+   - **Response Format:**
+     3. Przykład:
+        ```json
+        { 
+          "type": "json_schema", 
+          "json_schema": {
+            "name": "ChatResponse", 
+            "strict": true, 
+            "schema": { 
+              "message": { "type": "string" } 
+            } 
+          } 
+        }
+        ```
+   - **Nazwa modelu:**
+     4. Przykład: `gpt-4`
+   - **Parametry modelu:**
+     5. Przykład: `{ temperature: 1.0, top_p: 1.0, frequency_penalty: 0.0, presence_penalty: 0.0 }`
+5. **Implementacja logiki odpowiedzi i walidacji:**
+   - Utworzenie metody `_parseResponse(response)` do walidacji i parsowania odpowiedzi z API przy użyciu JSON Schema.
+6. **Implementacja obsługi błędów i logowania:**
+   - Stworzenie metody `_handleError(error)` do centralnej obsługi wszystkich błędów.
    - Dodanie globalnego handlera błędów na poziomie aplikacji.
-6. **Testowanie usługi**
-   - Przeprowadzenie testów jednostkowych dla metod budujących zapytania i walidujących odpowiedzi.
-   - Wykonanie testów integracyjnych, wysyłających zapytania do API OpenRouter w środowisku testowym.
+   - Dodać mechanizmy logowania błędów, pamiętając o zasadach bezpieczeństwa i nie rejestrowaniu danych wrażliwych

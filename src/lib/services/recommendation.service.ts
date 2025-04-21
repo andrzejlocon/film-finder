@@ -3,9 +3,14 @@ import type { SupabaseClient } from "../../db/supabase.client";
 import { DEFAULT_USER_ID } from "../../db/supabase.client";
 import type { RecommendationCriteria, RecommendationResponseDTO, RecommendedFilmDTO } from "../../types";
 import { recommendationCriteriaSchema } from "../schemas/recommendations.schema";
+import { OpenRouterService } from "./openrouter.service";
 
 export class RecommendationService {
-  constructor(private readonly supabase: SupabaseClient) {}
+  private readonly openRouter: OpenRouterService;
+
+  constructor(private readonly supabase: SupabaseClient) {
+    this.openRouter = new OpenRouterService();
+  }
 
   private generateCriteriaHash(criteria: RecommendationCriteria | null): string {
     if (!criteria) return "";
@@ -13,36 +18,54 @@ export class RecommendationService {
     return crypto.createHash("md5").update(criteriaString).digest("hex");
   }
 
-  private getMockedRecommendations(): RecommendedFilmDTO[] {
-    return [
-      {
-        title: "Inception",
-        year: 2010,
-        description:
-          "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-        genres: ["Action", "Sci-Fi", "Thriller"],
-        actors: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
-        director: "Christopher Nolan",
-      },
-      {
-        title: "The Matrix",
-        year: 1999,
-        description:
-          "A computer programmer discovers that reality as he knows it is a simulation created by machines, and joins a rebellion to break free.",
-        genres: ["Action", "Sci-Fi"],
-        actors: ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"],
-        director: "Lana Wachowski",
-      },
-      {
-        title: "Interstellar",
-        year: 2014,
-        description:
-          "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-        genres: ["Adventure", "Drama", "Sci-Fi"],
-        actors: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
-        director: "Christopher Nolan",
-      },
-    ];
+  private buildPrompt(criteria: RecommendationCriteria | null): string {
+    let prompt =
+      "Please recommend 10 movies. For each movie, provide: title, year, description, genres (as array), actors (as array), and director. Format as JSON array.";
+
+    if (criteria) {
+      if (criteria.genres?.length) {
+        prompt += `\nPreferred genres: ${criteria.genres.join(", ")}.`;
+      }
+      if (criteria.actors?.length) {
+        prompt += `\nPreferred actors: ${criteria.actors.join(", ")}.`;
+      }
+      if (criteria.directors?.length) {
+        prompt += `\nPreferred directors: ${criteria.directors.join(", ")}.`;
+      }
+      if (criteria.year_from || criteria.year_to) {
+        prompt += `\nYear range: ${criteria.year_from || "any"} to ${criteria.year_to || "any"}.`;
+      }
+    }
+
+    prompt +=
+      "\nResponse must be valid JSON array of objects with exact fields: title, year, description, genres, actors, director.";
+    return prompt;
+  }
+
+  private parseRecommendations(response: string): RecommendedFilmDTO[] {
+    try {
+      const parsed = JSON.parse(response) as { movies: RecommendedFilmDTO[] };
+      if (!Array.isArray(parsed.movies)) {
+        throw new Error("Response is not an array");
+      }
+
+      // Validate each film has required fields
+      return parsed.movies.map((film) => {
+        if (
+          !film.title ||
+          !film.year ||
+          !film.description ||
+          !Array.isArray(film.genres) ||
+          !Array.isArray(film.actors) ||
+          !film.director
+        ) {
+          throw new Error("Invalid film format in response");
+        }
+        return film;
+      });
+    } catch (error) {
+      throw new Error(`Failed to parse recommendations: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
   }
 
   async getRecommendations(criteria?: RecommendationCriteria): Promise<RecommendationResponseDTO> {
@@ -82,8 +105,15 @@ export class RecommendationService {
         }
       }
 
-      // Get mocked recommendations (TODO: Replace with actual AI API call)
-      const recommendations = this.getMockedRecommendations();
+      // Get recommendations from OpenRouter
+      const prompt = this.buildPrompt(criteria || null);
+      const response = await this.openRouter.sendChatRequest(prompt);
+
+      if (!response.choices?.[0]?.message?.content) {
+        throw new Error("Invalid response format from OpenRouter");
+      }
+
+      const recommendations = this.parseRecommendations(response.choices[0].message.content);
 
       // Log the generation
       const { data: generationLog, error: logError } = await this.supabase
@@ -92,7 +122,7 @@ export class RecommendationService {
           user_id: DEFAULT_USER_ID,
           criteria_hash: this.generateCriteriaHash(criteria || null),
           generation_duration: Date.now() - startTime,
-          model: "gpt-4",
+          model: response.model,
           generated_count: recommendations.length,
         })
         .select()
@@ -114,7 +144,7 @@ export class RecommendationService {
         error_message: error instanceof Error ? error.message : "Unknown error",
         criteria_hash: this.generateCriteriaHash(criteria || null),
         error_code: "GENERATION_ERROR",
-        model: "gpt-4",
+        model: "openai/gpt-4o-mini",
       });
 
       throw error;
