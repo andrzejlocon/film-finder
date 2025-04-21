@@ -31,7 +31,7 @@ Widok będzie dostępny pod adresem `/recommendations`.
 - Opis: Formularz umożliwiający wpisanie kryteriów wyszukiwania filmów.
 - Główne elementy: Inputy tekstowe (token input/chips) dla aktorów, reżyserów, gatunków oraz pola numeryczne dla `year_from` i `year_to`.
 - Obsługiwane interakcje: Wprowadzanie danych, kliknięcie przycisku "Uzupełnij z profilu" (wywołanie funkcji uzupełniającej dane z profilu).
-- Walidacja: Sprawdzenie poprawności formatów wpisywanych danych oraz weryfikacja, czy `year_from` jest mniejsze lub równe `year_to`.
+- Walidacja: Sprawdzenie poprawności formatów wpisywanych danych oraz weryfikacja, czy `year_from` jest mniejsze lub równe `year_to` oraz czy `year_from` i `year_to` są większe lub równe 1887 i mniejsze lub równe obecny rok.
 - Typy: RecommendationCriteriaViewModel.
 - Propsy: Callback do aktualizacji stanu w RecommendationView.
 
@@ -88,7 +88,7 @@ Widok będzie dostępny pod adresem `/recommendations`.
   - generation_id: number
   - generated_count: number
 
-- **FilmViewModel** (bazuje na RecommendedFilmDTO, rozszerzony o wybrany status):
+- **FilmViewModel** (bazuje na RecommendedFilmDTO, rozszerzony o wybrany status i generation_id):
   - title: string
   - year: number
   - description: string
@@ -96,6 +96,7 @@ Widok będzie dostępny pod adresem `/recommendations`.
   - actors: string[]
   - director: string
   - status?: "to-watch" | "watched" | "rejected"
+  - generation_id: number
 
 ## 6. Zarządzanie stanem
 - Użycie hooka `useState` do przechowywania:
