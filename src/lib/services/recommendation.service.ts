@@ -20,25 +20,27 @@ export class RecommendationService {
 
   private buildPrompt(criteria: RecommendationCriteria | null): string {
     let prompt =
-      "Please recommend 10 movies. For each movie, provide: title, year, description, genres (as array), actors (as array), and director. Format as JSON array.";
+      "Please recommend up to 10 films based on the following criteria. Each movie should meet as many of the given preferences as possible, with priority given to matching actors and directors.\n\n";
 
     if (criteria) {
-      if (criteria.genres?.length) {
-        prompt += `\nPreferred genres: ${criteria.genres.join(", ")}.`;
-      }
       if (criteria.actors?.length) {
-        prompt += `\nPreferred actors: ${criteria.actors.join(", ")}.`;
+        prompt += `Preferred actors: ${criteria.actors.join(", ")}.\n`;
       }
       if (criteria.directors?.length) {
-        prompt += `\nPreferred directors: ${criteria.directors.join(", ")}.`;
+        prompt += `Preferred directors: ${criteria.directors.join(", ")}.\n`;
+      }
+      if (criteria.genres?.length) {
+        prompt += `Preferred genres: ${criteria.genres.join(", ")}.\n`;
       }
       if (criteria.year_from || criteria.year_to) {
-        prompt += `\nYear range: ${criteria.year_from || "any"} to ${criteria.year_to || "any"}.`;
+        prompt += `Year range: ${criteria.year_from || "any"} to ${criteria.year_to || "any"}.\n\n`;
       }
     }
 
     prompt +=
-      "\nResponse must be valid JSON array of objects with exact fields: title, year, description, genres, actors, director.";
+      "For each recommended film, include the full cast of main actors (not just the preferred ones). Do not limit the actor list only to the preferred ones — they should help guide film selection, but not filter the cast.\n" +
+      "Return the following for each film: title, year, description, genres (as array), actors (as array), and director.\n\n" +
+      "Return a JSON array with these objects, sorted by year in descending order.";
     return prompt;
   }
 

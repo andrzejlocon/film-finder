@@ -42,8 +42,8 @@ export class OpenRouterService {
 
     // Set default model parameters
     this._modelParameters = {
-      temperature: 0.7,
-      top_p: 1.0,
+      temperature: 0.1,
+      top_p: 0.6,
       //   frequency_penalty: 0.0,
       //   presence_penalty: 0.0,
       response_format: {
@@ -88,7 +88,7 @@ export class OpenRouterService {
 
     this._model = "openai/gpt-4o-mini";
     this._systemMessage =
-      "You are a movie recommendation assistant. Always respond with valid JSON arrays containing movie objects. Each movie object must have the following fields: title (string), year (number), description (string), genres (array of strings), actors (array of strings), and director (string). Never include any additional text or explanations outside the JSON array.";
+      "You are a movie recommendation assistant. Always respond with valid JSON arrays containing movie objects. Each movie object must have the following fields: title (string), year (number), description (string), genres (array of strings), actors (array of strings), and director (string). Never include any additional text or explanations outside the JSON array. If the user provides multiple preferences, give priority to the most specific ones (e.g., specific actors and directors). Avoid suggesting movies that are difficult to match with the provided criteria.";
   }
 
   // Public methods
@@ -96,6 +96,8 @@ export class OpenRouterService {
     const requestId = crypto.randomUUID();
     try {
       const payload = this._buildRequestPayload(message);
+
+      console.log("payload", payload);
 
       // Validate request payload
       const validationResult = requestPayloadSchema.safeParse(payload);
