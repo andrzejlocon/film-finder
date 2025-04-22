@@ -1,13 +1,13 @@
 ---
 import "../styles/global.css";
+import { Topbar } from "@/components/Topbar";
+import { Toaster } from "@/components/ui/sonner";
 
 interface Props {
   title?: string;
 }
 
 const { title = "10x Astro Starter" } = Astro.props;
-
-import { Toaster } from "@/components/ui/sonner";
 ---
 
 <!doctype html>
@@ -20,6 +20,7 @@ import { Toaster } from "@/components/ui/sonner";
     <title>{title}</title>
   </head>
   <body>
+    <Topbar client:load />
     <slot />
     <Toaster richColors closeButton client:only="react" />
   </body>
