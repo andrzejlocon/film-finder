@@ -1,12 +1,20 @@
 import type { APIRoute } from "astro";
-import { FilmsService } from "../../lib/services/films.service";
-import { createFilmCommandSchema } from "../../lib/schemas/films.schema";
-import { DEFAULT_USER_ID } from "../../db/supabase.client";
+import { FilmsService } from "@/lib/services/films.service.ts";
+import { createFilmCommandSchema } from "@/lib/schemas/films.schema.ts";
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
+    if (!locals.user) {
+      return new Response(
+        JSON.stringify({
+          error: "Unauthorized",
+        }),
+        { status: 401 }
+      );
+    }
+
     // Parse and validate request body
     const body = await request.json();
     const validationResult = createFilmCommandSchema.safeParse(body);
@@ -21,9 +29,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // Create films using service with default user ID
+    // Create films using service with user ID from locals
     const filmsService = new FilmsService(locals.supabase);
-    const createdFilms = await filmsService.createFilms(DEFAULT_USER_ID, validationResult.data);
+    const createdFilms = await filmsService.createFilms(locals.user.id, validationResult.data);
 
     return new Response(JSON.stringify(createdFilms), {
       status: 201,

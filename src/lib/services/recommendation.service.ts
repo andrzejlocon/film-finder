@@ -1,7 +1,6 @@
 import crypto from "crypto";
-import type { SupabaseClient } from "../../db/supabase.client";
-import { DEFAULT_USER_ID } from "../../db/supabase.client";
-import type { RecommendationCriteria, RecommendationResponseDTO, RecommendedFilmDTO } from "../../types";
+import type { SupabaseClient } from "@/db/supabase.client.ts";
+import type { RecommendationCriteria, RecommendationResponseDTO, RecommendedFilmDTO } from "@/types.ts";
 import { recommendationCriteriaSchema } from "../schemas/recommendations.schema";
 import { OpenRouterService } from "./openrouter.service";
 
@@ -70,7 +69,7 @@ export class RecommendationService {
     }
   }
 
-  async getRecommendations(criteria?: RecommendationCriteria): Promise<RecommendationResponseDTO> {
+  async getRecommendations(userId: string, criteria?: RecommendationCriteria): Promise<RecommendationResponseDTO> {
     const startTime = Date.now();
 
     try {
@@ -87,7 +86,7 @@ export class RecommendationService {
         const { data: preferences, error: preferencesError } = await this.supabase
           .from("user_preferences")
           .select("*")
-          .eq("user_id", DEFAULT_USER_ID)
+          .eq("user_id", userId)
           .maybeSingle();
 
         // Only throw if it's a real error, not just missing preferences
@@ -121,7 +120,7 @@ export class RecommendationService {
       const { data: generationLog, error: logError } = await this.supabase
         .from("generation_logs")
         .insert({
-          user_id: DEFAULT_USER_ID,
+          user_id: userId,
           criteria_hash: this.generateCriteriaHash(criteria || null),
           generation_duration: Date.now() - startTime,
           model: response.model,
@@ -142,7 +141,7 @@ export class RecommendationService {
     } catch (error) {
       // Log error
       await this.supabase.from("generation_error_logs").insert({
-        user_id: DEFAULT_USER_ID,
+        user_id: userId,
         error_message: error instanceof Error ? error.message : "Unknown error",
         criteria_hash: this.generateCriteriaHash(criteria || null),
         error_code: "GENERATION_ERROR",
