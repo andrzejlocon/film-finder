@@ -2,12 +2,20 @@
 import "../styles/global.css";
 import { Topbar } from "@/components/Topbar";
 import { Toaster } from "@/components/ui/sonner";
+import { createSupabaseServerInstance } from "@/db/supabase.client";
 
 interface Props {
   title?: string;
 }
 
-const { title = "10x Astro Starter" } = Astro.props;
+const { title = "FilmFinder" } = Astro.props;
+
+// Get user session
+const supabase = createSupabaseServerInstance({ cookies: Astro.cookies, headers: Astro.request.headers });
+const { data: { user } } = await supabase.auth.getUser();
+
+// Ensure email is defined before passing to Topbar
+const userProps = user?.email ? { email: user.email } : null;
 ---
 
 <!doctype html>
@@ -20,7 +28,7 @@ const { title = "10x Astro Starter" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <Topbar client:load />
+    <Topbar client:load user={userProps} />
     <slot />
     <Toaster richColors closeButton client:only="react" />
   </body>

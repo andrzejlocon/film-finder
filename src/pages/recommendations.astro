@@ -1,6 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { RecommendationView } from "@/components/recommendations/RecommendationView";
+
+// This page requires authentication (handled by middleware)
+export const prerender = false;
+
+const { user } = Astro.locals;
 ---
 
 <Layout title="Film Recommendations">
