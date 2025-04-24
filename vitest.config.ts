@@ -25,7 +25,7 @@ export default defineConfig({
     },
     setupFiles: ["./test/setup.ts"],
     reporters: ["default", "html"],
-    watch: false,
+    watch: true,
   },
   resolve: {
     alias: {
