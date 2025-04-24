@@ -50,6 +50,11 @@ FilmFinder is a minimal viable product (MVP) application designed to simplify th
 - `npm run lint` - Runs ESLint to analyze and identify code issues.
 - `npm run lint:fix` - Attempts to automatically fix ESLint issues.
 - `npm run format` - Formats the codebase using Prettier.
+- `npm run test` - Runs Vitest unit tests in watch mode.
+- `npm run test:ui` - Runs Vitest unit tests with UI interface.
+- `npm run test:coverage` - Runs Vitest unit tests and generates coverage report.
+- `npm run test:e2e` - Runs Playwright E2E tests.
+- `npm run test:e2e:ui` - Runs Playwright E2E tests with UI interface.
 
 ## Project Scope
 FilmFinder focuses on delivering a streamlined and user-centric film recommendation experience. Key features include:

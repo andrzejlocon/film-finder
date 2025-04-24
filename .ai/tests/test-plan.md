@@ -46,7 +46,7 @@ Testy obejmą:
 ## 4. Scenariusze testowe dla kluczowych funkcjonalności
 - **Autoryzacja i autentykacja:** Weryfikacja procesu logowania, rejestracji oraz zarządzania sesjami użytkowników.
 - **Wyszukiwarka filmów:** Testy wyszukiwania, filtrowania, sortowania i paginacji wyników.
-- **Wyświetlanie szczegółów filmu:** Sprawdzenie poprawności prezentacji informacji o filmie, w tym opisów, ocen, recenzji i multimediów.
+- **Wyświetlanie szczegółów filmu:** Sprawdzenie poprawności prezentacji informacji o filmie.
 - **Interakcje i nawigacja:** Testowanie szybkości i intuicyjności przechodzenia między stronami, reakcji interaktywnych elementów oraz responsywności interfejsu.
 - **Integracja z bazą danych:** Testowanie komunikacji z Supabase, poprawności zapytań i obsługi błędów.
 
