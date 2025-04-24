@@ -13,7 +13,7 @@
    - **Tryb auth i non-auth:** Główny layout (np. `./src/layouts/Layout.astro`) będzie odpowiedzialny za renderowanie widoków zależnie od stanu autoryzacji. W trybie autoryzowanym do layoutu dołączany będzie dodatkowy pasek nawigacji i elementy specyficzne dla zalogowanych użytkowników (np. przycisk "Wyloguj", link do profilu), natomiast w trybie niezalogowanym prezentowana będzie strona logowania z linkami do resetu hasła i rejestracji.
    - **Relacja index.astro i Topbar.tsx:**
      - Strona główna `index.astro` pełni rolę punktu startowego i/lub przekierowania do właściwego widoku (np. do rekomendacji) po weryfikacji sesji użytkownika.
-     - Komponent `Topbar.tsx` jest osadzony w głównym layoucie i odpowiada za wyświetlanie nawigacji oraz opcji związanych z autoryzacją. W zależności od stanu sesji użytkownika renderowane są odpowiednie opcje (np. wyświetlanie przycisku "Wyloguj" dla zalogowanych i "Logowanie/Rejestracja" dla niezalogowanych).
+     - Komponent `Topbar.tsx` jest osadzony w głównym layoucie i odpowiada za wyświetlanie nawigacji oraz opcji związanych z autoryzacją. W zależności od stanu sesji użytkownika renderowane są odpowiednie opcje (np. wyświetlanie przycisku "Wyloguj" dla zalogowanych).
 
 3. **Podział odpowiedzialności między strony astro a komponenty React:**
    - **Strony Astro:** Odpowiadają za server-side rendering, routing oraz wstępne ładowanie danych autoryzacyjnych (sesja, tokeny). Przekazują odpowiednie dane do komponentów React przez propsy.

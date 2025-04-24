@@ -18,6 +18,9 @@ FilmFinder is a minimal viable product (MVP) application designed to simplify th
 - **Frontend:** Astro 5, React 19, TypeScript 5, Tailwind CSS 4, Shadcn/ui
 - **Backend:** Supabase for database management and authentication
 - **AI Integration:** Openrouter.ai for accessing AI models to generate recommendations
+- **Testing:**
+  - **Unit Testing:** Vitest, React Testing Library, Testing Library/user-event
+  - **E2E Testing:** Playwright
 - **CI/CD and Deployment:** GitHub Actions for CI/CD, DigitalOcean for hosting (Docker-based deployment)
 
 ## Getting Started Locally
