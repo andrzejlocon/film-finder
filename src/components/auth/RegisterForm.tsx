@@ -81,9 +81,7 @@ export function RegisterForm({ onSubmit, isLoading, error }: RegisterFormProps) 
               onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
               required
             />
-            {validationErrors.password && (
-              <p className="text-sm text-red-500">{validationErrors.password}</p>
-            )}
+            {validationErrors.password && <p className="text-sm text-red-500">{validationErrors.password}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -107,7 +105,7 @@ export function RegisterForm({ onSubmit, isLoading, error }: RegisterFormProps) 
           <div className="text-sm text-center">
             Already have an account?{" "}
             <a href="/login" className="text-blue-600 hover:underline">
-              Sign in
+              Sign In
             </a>
           </div>
         </CardFooter>

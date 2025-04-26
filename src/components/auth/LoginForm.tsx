@@ -50,10 +50,10 @@ export function LoginForm() {
         <CardTitle className="text-2xl">Welcome back</CardTitle>
         <CardDescription>Enter your email and password to sign in to your account</CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="login-form">
         <CardContent className="space-y-6">
           {error && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" data-testid="login-error">
               <ExclamationTriangleIcon className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -68,6 +68,7 @@ export function LoginForm() {
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
               required
               disabled={isLoading}
+              data-testid="login-email"
             />
           </div>
           <div className="space-y-2">
@@ -80,11 +81,17 @@ export function LoginForm() {
               onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
               required
               disabled={isLoading}
+              data-testid="login-password"
             />
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 pt-6">
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading}
+            data-testid="login-submit"
+          >
             {isLoading ? "Signing in..." : "Sign in"}
           </Button>
           <div className="text-sm text-center space-x-1">

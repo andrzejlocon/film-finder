@@ -17,11 +17,13 @@ interface TopbarProps {
 export function Topbar({ user, className }: TopbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navigationLinks = user ? [
-    { href: "/recommendations", label: "Recommendations" },
-    { href: "/watchlist", label: "Watchlist" },
-    { href: "/profile", label: "Profile" },
-  ] : [];
+  const navigationLinks = user
+    ? [
+        { href: "/recommendations", label: "Recommendations" },
+        { href: "/watchlist", label: "Watchlist" },
+        { href: "/profile", label: "Profile" },
+      ]
+    : [];
 
   const handleSignOut = async () => {
     try {
@@ -40,7 +42,12 @@ export function Topbar({ user, className }: TopbarProps) {
   };
 
   return (
-    <header className={cn("sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        className
+      )}
+    >
       <div className="container flex h-14 items-center mx-auto">
         <div className="mr-4 flex items-center">
           {/* Mobile Menu */}
@@ -90,29 +97,30 @@ export function Topbar({ user, className }: TopbarProps) {
         <div className="flex flex-1 items-center justify-between space-x-2">
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            {user && navigationLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium transition-colors hover:text-primary"
-              >
-                {link.label}
-              </a>
-            ))}
+            {user &&
+              navigationLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  {link.label}
+                </a>
+              ))}
           </nav>
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="hidden md:flex items-center space-x-4">
-                <span className="text-sm text-muted-foreground">{user.email}</span>
-                <Button variant="outline" onClick={handleSignOut}>
-                  Sign out
+                <span className="text-sm text-muted-foreground" data-testid="user-email">{user.email}</span>
+                <Button variant="outline" onClick={handleSignOut} data-testid="sign-out-button">
+                  Sign Out
                 </Button>
               </div>
             ) : (
               <Button variant="outline" asChild>
-                <a href="/login">Sign in</a>
+                <a href="/login">Sign In</a>
               </Button>
             )}
           </div>
