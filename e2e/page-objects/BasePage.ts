@@ -1,27 +1,27 @@
 import type { Page } from "@playwright/test";
 
 /**
- * Bazowa klasa Page Object dla wszystkich stron
+ * Base Page Object class for all pages
  */
 export class BasePage {
   constructor(protected page: Page) {}
 
   /**
-   * Przechodzi do podanego URL
+   * Navigates to the given URL
    */
   async navigate(path = "/") {
     await this.page.goto(path);
   }
 
   /**
-   * Czeka na załadowanie strony
+   * Waits for the page to load
    */
   async waitForPageLoad() {
     await this.page.waitForLoadState("networkidle");
   }
 
   /**
-   * Pobiera tekst elementu o podanym selektorze
+   * Gets the text content of the element with the given selector
    */
   async getTextContent(selector: string): Promise<string | null> {
     const element = this.page.locator(selector);
@@ -30,7 +30,7 @@ export class BasePage {
   }
 
   /**
-   * Wykonuje kliknięcie w element o podanym selektorze
+   * Performs a click on the element with the given selector
    */
   async clickElement(selector: string) {
     const element = this.page.locator(selector);
@@ -39,7 +39,7 @@ export class BasePage {
   }
 
   /**
-   * Uzupełnia pole tekstowe
+   * Fills in the input field with the given selector
    */
   async fillInput(selector: string, value: string) {
     const input = this.page.locator(selector);

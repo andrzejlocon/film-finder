@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { BasePage } from "./pages/BasePage";
+import { BasePage } from "./page-objects/BasePage";
 
-test.describe("Strona główna", () => {
+test.describe("Start page", () => {
   let basePage: BasePage;
 
   test.beforeEach(async ({ page }) => {
@@ -10,15 +10,15 @@ test.describe("Strona główna", () => {
     await basePage.waitForPageLoad();
   });
 
-  test("posiada poprawny tytuł", async ({ page }) => {
-    // Sprawdź tytuł strony
+  test("has correct title", async ({ page }) => {
+    // Check page title
     await expect(page).toHaveTitle(/Sign in - FilmFinder/);
   });
 
-  test("wyświetla główne komponenty interfejsu", async ({ page }) => {
-    // Sprawdź czy główne elementy strony zostały załadowane
+  test("displays main components", async ({ page }) => {
+    // Check if main elements of the page are loaded
     const form = page.locator("form");
-    const button = page.locator("button");
+    const button = page.locator("button", { hasText: "Sign In" });
 
     await expect(form).toBeVisible();
     await expect(button).toBeVisible();

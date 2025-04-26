@@ -26,9 +26,7 @@ export function PasswordRecoveryForm({ onSubmit, isLoading, error, success }: Pa
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-2">
         <CardTitle className="text-2xl">Reset your password</CardTitle>
-        <CardDescription>
-          Enter your email address and we'll send you a link to reset your password
-        </CardDescription>
+        <CardDescription>Enter your email address and we'll send you a link to reset your password</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-6">
@@ -60,17 +58,13 @@ export function PasswordRecoveryForm({ onSubmit, isLoading, error, success }: Pa
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 pt-6">
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading || success}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading || success}>
             {isLoading ? "Sending reset link..." : "Send reset link"}
           </Button>
           <div className="text-sm text-center">
             Remember your password?{" "}
             <a href="/login" className="text-blue-600 hover:underline">
-              Sign in
+              Sign In
             </a>
           </div>
         </CardFooter>
