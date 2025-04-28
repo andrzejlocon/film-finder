@@ -1,4 +1,5 @@
 <user_journey_analysis>
+
 1. Ścieżki użytkownika:
    - Użytkownik wchodzi na stronę logowania jako niezalogowany.
    - Z ekranu logowania może przejść do:
@@ -21,6 +22,7 @@
    - Rejestracja: Proces tworzenia nowego konta, z opcjonalną weryfikacją maila.
    - Reset_Hasla: Proces inicjowania resetu hasła i wysyłki odpowiedniego emaila.
    - Panel_Uzytkownika: Stan końcowy, gdzie użytkownik uzyskuje pełny dostęp po autoryzacji.
+
 </user_journey_analysis>
 
 ```mermaid

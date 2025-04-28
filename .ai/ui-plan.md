@@ -3,6 +3,7 @@
 ## 1. Przegląd struktury UI
 
 Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui. Główna struktura interfejsu uwzględnia:
+
 - Modułowe widoki odpowiadające kluczowym funkcjonalnościom (autentykacja, profil użytkownika, generowanie rekomendacji, przegląd list filmów).
 - Globalną nawigację opartą o topbar, umożliwiającą łatwy dostęp do poszczególnych sekcji.
 - Responsywność i zgodność z WCAG AA, implementowaną przy użyciu Tailwind CSS.
@@ -11,6 +12,7 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 ## 2. Lista widoków
 
 ### 2.1. Ekran autentykacji (Logowanie/Rejestracja)
+
 - **Ścieżka widoku:** /login i /register
 - **Główny cel:** Umożliwienie użytkownikowi rejestracji oraz logowania w systemie.
 - **Kluczowe informacje:** Formularze z regex walidacją adresu email oraz hasła (min. 8 znaków, duże i małe litery, cyfry, znaki specjalne).
@@ -18,6 +20,7 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 - **UX, dostępność i względy bezpieczeństwa:** Przejrzysty i responsywny interfejs; walidacja pól formularza oraz wsparcie dla klawiaturowej nawigacji i screen readerów.
 
 ### 2.2. Ekran profilu użytkownika (Preferencje filmowe)
+
 - **Ścieżka widoku:** /profile
 - **Główny cel:** Uzupełnienie i edycja preferencji filmowych użytkownika.
 - **Kluczowe informacje:** Informacje o preferencjach dotyczących aktorów, reżyserów, gatunków i zakresu lat produkcji. Formularz wykorzystujący token input/chips do wprowadzania wielu wartości.
@@ -25,6 +28,7 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 - **UX, dostępność i względy bezpieczeństwa:** Brak autozapisu zapewnia kontrolę użytkownika; responsywność i czytelność na wszystkich urządzeniach; dostępność dla osób z niepełnosprawnościami.
 
 ### 2.3. Widok generowania rekomendacji
+
 - **Ścieżka widoku:** /recommendations
 - **Główny cel:** Umożliwienie użytkownikowi ustawienia kryteriów wyszukiwania i wygenerowania rekomendacji filmowych przez AI.
 - **Kluczowe informacje:** Formularz do wpisywania kryteriów (aktorzy, reżyserzy, gatunki, zakres lat) oraz wizualizacja wyników w postaci kart filmowych. Formularz wykorzystujący token input/chips do wprowadzania wielu wartości. Obok formularza przycisk uzupełnij z profilu, do uzupełniania kryteriów preferencjami użytkownika.
@@ -32,6 +36,7 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 - **UX, dostępność i względy bezpieczeństwa:** Jasne komunikaty inline o błędach (np. problem z API), responsywność
 
 ### 2.4. Ekran list filmów (Zarządzanie filmami)
+
 - **Ścieżka widoku:** /films
 - **Główny cel:** Przeglądanie i zarządzanie filmami zapisanymi przez użytkownika w trzech kategoriach: "Do obejrzenia", "Obejrzane", "Odrzucone".
 - **Kluczowe informacje:** Wyświetlenie kart filmowych z tytułem, rokiem produkcji, krótkim opisem, gatunkiem oraz informacjami o aktorach i reżyserze.
@@ -67,4 +72,4 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 - **Toast/Alert System:** Globalny system powiadomień o sukcesach i błędach.
 - **Modal Potwierdzenia:** Używany przy operacjach krytycznych, takich jak usunięcie konta.
 - **Token Input/Chips:** Umożliwiają dynamiczne wprowadzanie wielu wartości w formularzach (np. dla aktorów, reżyserów, gatunków).
-- **React Context i Hooki:** Początkowa implementacja zarządzania stanem aplikacji, pozwalająca na synchronizację danych z API. 
+- **React Context i Hooki:** Początkowa implementacja zarządzania stanem aplikacji, pozwalająca na synchronizację danych z API.

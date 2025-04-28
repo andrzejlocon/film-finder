@@ -17,7 +17,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     if (error) {
       return new Response(
         JSON.stringify({
-          error: "Invalid email or password"
+          error: "Invalid email or password",
         }),
         { status: 400 }
       );
@@ -26,14 +26,15 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return new Response(
       JSON.stringify({
         user: data.user,
-        redirectTo: "/recommendations"
+        redirectTo: "/recommendations",
       }),
       { status: 200 }
     );
   } catch (error) {
+    console.error("Error during login:", error);
     return new Response(
       JSON.stringify({
-        error: "An unexpected error occurred"
+        error: "An unexpected error occurred",
       }),
       { status: 500 }
     );

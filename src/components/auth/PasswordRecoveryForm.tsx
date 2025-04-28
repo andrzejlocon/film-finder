@@ -8,7 +8,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 
 interface PasswordRecoveryFormProps {
-  onSubmit: (email: string) => void;
+  onSubmit?: (email: string) => void;
   isLoading?: boolean;
   error?: string;
   success?: boolean;
@@ -19,14 +19,16 @@ export function PasswordRecoveryForm({ onSubmit, isLoading, error, success }: Pa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(email);
+    onSubmit?.(email);
   };
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-2">
         <CardTitle className="text-2xl">Reset your password</CardTitle>
-        <CardDescription>Enter your email address and we'll send you a link to reset your password</CardDescription>
+        <CardDescription>
+          Enter your email address and we&apos;ll send you a link to reset your password
+        </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-6">

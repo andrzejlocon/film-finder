@@ -26,14 +26,14 @@ npm run test:coverage
 ### Przykład testu jednostkowego
 
 ```tsx
-import { describe, it, expect, vi } from 'vitest';
-import { render } from '../../../test/helpers';
-import { Button } from './button';
+import { describe, it, expect, vi } from "vitest";
+import { render } from "../../../test/helpers";
+import { Button } from "./button";
 
-describe('Button', () => {
-  it('renderuje się z poprawną treścią', () => {
+describe("Button", () => {
+  it("renderuje się z poprawną treścią", () => {
     const { getByRole } = render(<Button>Kliknij mnie</Button>);
-    expect(getByRole('button', { name: /kliknij mnie/i })).toBeTruthy();
+    expect(getByRole("button", { name: /kliknij mnie/i })).toBeTruthy();
   });
 });
 ```
@@ -64,10 +64,10 @@ npm run test:e2e:ui
 ### Przykład testu E2E
 
 ```ts
-import { test, expect } from '@playwright/test';
-import { HomePage } from './pages/HomePage';
+import { test, expect } from "@playwright/test";
+import { HomePage } from "./pages/HomePage";
 
-test.describe('Strona główna', () => {
+test.describe("Strona główna", () => {
   let homePage;
 
   test.beforeEach(async ({ page }) => {
@@ -75,7 +75,7 @@ test.describe('Strona główna', () => {
     await homePage.navigate();
   });
 
-  test('posiada poprawny tytuł', async ({ page }) => {
+  test("posiada poprawny tytuł", async ({ page }) => {
     await expect(page).toHaveTitle(/Film Finder/);
   });
 });

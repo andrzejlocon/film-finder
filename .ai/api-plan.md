@@ -14,6 +14,7 @@
 ### Films (User Films)
 
 - **GET /films**
+
   - **Description**: Retrieve a paginated list of films for the authenticated user.
   - **Query Parameters**:
     - `status` (optional): Filter by film status (e.g., `to-watch`, `watched`, `rejected`).
@@ -24,6 +25,7 @@
     - 200 OK with a JSON object containing a list of films and pagination metadata.
 
 - **POST /films**
+
   - **Description**: Create one or multiple film entries for the user.
   - **Request Payload**:
     ```json
@@ -54,18 +56,20 @@
     ```
   - **Response**:
     - 201 Created with an array of created film objects.
-  - **Errors**: 
+  - **Errors**:
     - 400 Bad Request (e.g., invalid year or status)
     - 409 Conflict (duplicate film titles for the user)
     - Response will include details about which films failed validation
 
 - **GET /films/{filmId}**
+
   - **Description**: Retrieve details of a specific film by its ID.
   - **Response**:
     - 200 OK with the film object.
   - **Errors**: 404 Not Found.
 
 - **PUT/PATCH /films/{filmId}**
+
   - **Description**: Update an existing film entry.
   - **Request Payload**: JSON object with updated fields (e.g., title, year, description, etc.).
   - **Response**:
@@ -73,6 +77,7 @@
   - **Errors**: 400 Bad Request, 404 Not Found.
 
 - **DELETE /films/{filmId}**
+
   - **Description**: Delete a film entry.
   - **Response**:
     - 204 No Content.
@@ -93,6 +98,7 @@
 ### Preferences
 
 - **GET /preferences**
+
   - **Description**: Retrieve the film preferences of the authenticated user.
   - **Response**:
     - 200 OK with the preferences object.
@@ -136,12 +142,14 @@
 ### Admin/Monitoring (Optional/Internal Endpoints)
 
 - **GET /logs/film-status**
+
   - **Description**: Retrieve film status change logs for auditing purposes.
   - **Query Parameters**: `filmId`, `userId`, `page`, `limit`.
   - **Response**:
     - 200 OK with a list of log entries.
 
 - **GET /logs/generation**
+
   - **Description**: Retrieve logs related to recommendation generation events.
   - **Response**:
     - 200 OK with a list of generation logs.
@@ -161,11 +169,13 @@
 ## 4. Validation and Business Logic
 
 - **Validation Rules (from DB Schema):**
+
   - Film `year` must be an integer and at least 1887.
   - Film `status` must be one of: "to-watch", "watched", or "rejected".
   - Unique constraint on films per user: a user cannot have two films with the same title.
 
 - **Business Logic Mappings (from PRD):**
+
   1. **User Registration and Login**: Securely create and authenticate users.
   2. **Managing Preferences**: Validate and save user preferences. Support 'fill from profile' in recommendation requests.
   3. **Film Management**: Perform standard CRUD operations with additional validation, and log any status changes via a dedicated endpoint (`POST /films/{filmId}/status`) which records changes in `film_status_logs`.
@@ -183,4 +193,4 @@
 
 - The API is built on top of Supabase, leveraging its PostgreSQL database and built-in authentication features.
 - The external AI recommendation generation endpoint is synchronous for the MVP. Future iterations may introduce asynchronous processing or background jobs.
-- Admin/monitoring endpoints are intended for internal use and are secured accordingly. 
+- Admin/monitoring endpoints are intended for internal use and are secured accordingly.

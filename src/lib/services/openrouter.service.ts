@@ -97,8 +97,6 @@ export class OpenRouterService {
     try {
       const payload = this._buildRequestPayload(message);
 
-      console.log("payload", payload);
-
       // Validate request payload
       const validationResult = requestPayloadSchema.safeParse(payload);
       if (!validationResult.success) {

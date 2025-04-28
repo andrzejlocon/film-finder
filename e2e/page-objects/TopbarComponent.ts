@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class TopbarComponent {
   readonly page: Page;
@@ -10,11 +10,11 @@ export class TopbarComponent {
 
   constructor(page: Page) {
     this.page = page;
-    this.userEmail = page.getByTestId('user-email');
-    this.signOutButton = page.getByTestId('sign-out-button');
-    this.mobileMenuButton = page.getByRole('button', { name: 'Toggle menu' });
-    this.mobileSignOutButton = page.getByRole('button', { name: 'Sign out' });
-    this.navigationLinks = page.getByRole('navigation').locator('a');
+    this.userEmail = page.getByTestId("user-email");
+    this.signOutButton = page.getByTestId("sign-out-button");
+    this.mobileMenuButton = page.getByRole("button", { name: "Toggle menu" });
+    this.mobileSignOutButton = page.getByRole("button", { name: "Sign out" });
+    this.navigationLinks = page.getByRole("navigation").locator("a");
   }
 
   /**
@@ -39,14 +39,14 @@ export class TopbarComponent {
       await this.signOutButton.click();
     }
     // Wait for navigation to login page
-    await this.page.waitForURL('/login');
+    await this.page.waitForURL("/login");
   }
 
   /**
    * Checks if all navigation links are present for logged in user
    */
   async expectNavigationLinks() {
-    const expectedLinks = ['Recommendations', 'Watchlist', 'Profile'];
+    const expectedLinks = ["Recommendations", "Watchlist", "Profile"];
     for (const link of expectedLinks) {
       await expect(this.navigationLinks.getByText(link)).toBeVisible();
     }
@@ -57,7 +57,7 @@ export class TopbarComponent {
    * @param section - The name of the section to navigate to
    * @param isMobile - Whether to use the mobile menu
    */
-  async navigateTo(section: 'Recommendations' | 'Watchlist' | 'Profile', isMobile = false) {
+  async navigateTo(section: "Recommendations" | "Watchlist" | "Profile", isMobile = false) {
     if (isMobile) {
       await this.mobileMenuButton.click();
     }

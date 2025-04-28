@@ -1,4 +1,5 @@
 <architecture_analysis>
+
 1. Komponenty:
    - Layout.astro: Główny layout w Astro, odpowiedzialny za renderowanie stron w zależności od stanu autentykacji.
    - Topbar.tsx: Komponent React, zawiera nawigację oraz przycisk wylogowania.
@@ -19,6 +20,7 @@
    - Topbar.tsx: Umożliwia nawigację i oferuje opcję wylogowania.
    - Formularze (LoginForm, RegisterForm, PasswordRecoveryForm): Zbierają dane użytkownika i inicjują działania autentykacyjne.
    - AuthService: Obsługuje logikę autentykacji przy użyciu Supabase Auth.
+
 </architecture_analysis>
 
 ```mermaid

@@ -1,4 +1,5 @@
 <authentication_analysis>
+
 1. Przepływy autentykacji z dokumentacji PRD i AuthSpec:
    - Rejestracja: Użytkownik wysyła formularz rejestracji, dane są walidowane, Astro API wywołuje metodę supabase.auth.signUp, a w przypadku powodzenia użytkownik otrzymuje potwierdzenie oraz, opcjonalnie, e-mail weryfikacyjny. Następnie tworzona jest sesja i użytkownik jest przekierowywany do profilu.
    - Logowanie: Użytkownik wysyła formularz logowania, Astro API wywołuje metodę supabase.auth.signIn, a po poprawnym zalogowaniu tworzony jest token sesji, który jest przekazywany do przeglądarki i umożliwia dostęp do chronionych zasobów.
@@ -15,10 +16,10 @@
    - Logowanie: Dane logowania → Supabase Auth (signIn) → utworzenie sesji (token) → dostęp do chronionych zasobów.
    - Wylogowanie: Żądanie wylogowania → Supabase Auth (signOut) → zakończenie sesji → przekierowanie na stronę logowania.
    - Reset hasła: Żądanie resetu → Supabase Auth (resetPasswordForEmail) → wysłanie linku resetującego.
+
 </authentication_analysis>
 
 ##
-
 
 ```mermaid
 sequenceDiagram

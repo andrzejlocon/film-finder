@@ -16,7 +16,7 @@ const storageMock = () => {
       storage[key] = value.toString();
     },
     removeItem: (key: string) => {
-      delete storage[key];
+      storage = Object.fromEntries(Object.entries(storage).filter(([k]) => k !== key));
     },
     clear: () => {
       storage = {};

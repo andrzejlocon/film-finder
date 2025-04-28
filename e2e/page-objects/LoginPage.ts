@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class LoginPage {
   readonly page: Page;
@@ -10,19 +10,19 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.form = page.getByTestId('login-form');
-    this.emailInput = page.getByTestId('login-email');
-    this.passwordInput = page.getByTestId('login-password');
-    this.submitButton = page.getByTestId('login-submit');
-    this.errorAlert = page.getByTestId('login-error');
+    this.form = page.getByTestId("login-form");
+    this.emailInput = page.getByTestId("login-email");
+    this.passwordInput = page.getByTestId("login-password");
+    this.submitButton = page.getByTestId("login-submit");
+    this.errorAlert = page.getByTestId("login-error");
   }
 
   /**
    * Navigates to the login page
    */
   async goto() {
-    await this.page.goto('/login');
-    await this.page.waitForURL('/login');
+    await this.page.goto("/login");
+    await this.page.waitForURL("/login");
     await this.page.waitForLoadState("networkidle");
   }
 
@@ -77,7 +77,7 @@ export class LoginPage {
    */
   async expectLoading() {
     await expect(this.submitButton).toBeDisabled();
-    await expect(this.submitButton).toContainText('Signing in...');
+    await expect(this.submitButton).toContainText("Signing in...");
   }
 
   /**
@@ -85,6 +85,6 @@ export class LoginPage {
    */
   async expectReady() {
     await expect(this.submitButton).toBeEnabled();
-    await expect(this.submitButton).toContainText('Sign in');
+    await expect(this.submitButton).toContainText("Sign in");
   }
 }

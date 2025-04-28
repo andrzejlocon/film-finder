@@ -36,7 +36,8 @@ export function Topbar({ user, className }: TopbarProps) {
       }
 
       window.location.href = "/login";
-    } catch (error) {
+    } catch (e) {
+      console.error("Error during sign out:", e);
       toast.error("Failed to sign out. Please try again.");
     }
   };
@@ -113,7 +114,9 @@ export function Topbar({ user, className }: TopbarProps) {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="hidden md:flex items-center space-x-4">
-                <span className="text-sm text-muted-foreground" data-testid="user-email">{user.email}</span>
+                <span className="text-sm text-muted-foreground" data-testid="user-email">
+                  {user.email}
+                </span>
                 <Button variant="outline" onClick={handleSignOut} data-testid="sign-out-button">
                   Sign Out
                 </Button>

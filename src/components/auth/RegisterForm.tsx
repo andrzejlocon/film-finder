@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 interface RegisterFormProps {
-  onSubmit: (email: string, password: string, confirmPassword: string) => void;
+  onSubmit?: (email: string, password: string, confirmPassword: string) => void;
   isLoading?: boolean;
   error?: string;
 }
@@ -42,7 +42,7 @@ export function RegisterForm({ onSubmit, isLoading, error }: RegisterFormProps) 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      onSubmit(formData.email, formData.password, formData.confirmPassword);
+      onSubmit?.(formData.email, formData.password, formData.confirmPassword);
     }
   };
 

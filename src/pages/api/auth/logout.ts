@@ -12,7 +12,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     if (error) {
       return new Response(
         JSON.stringify({
-          error: "Failed to sign out"
+          error: "Failed to sign out",
         }),
         { status: 400 }
       );
@@ -21,13 +21,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     return new Response(null, {
       status: 200,
       headers: {
-        "Location": "/login"
-      }
+        Location: "/login",
+      },
     });
   } catch (error) {
+    console.error("Error during logout:", error);
     return new Response(
       JSON.stringify({
-        error: "An unexpected error occurred"
+        error: "An unexpected error occurred",
       }),
       { status: 500 }
     );

@@ -26,7 +26,9 @@ export const onRequest = defineMiddleware(async ({ request, cookies, redirect, l
   // Attach supabase client to locals
   locals.supabase = supabase;
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return redirect("/login");
