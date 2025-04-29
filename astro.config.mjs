@@ -14,15 +14,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  adapter: cloudflare({
-    //   imageService: "cloudflare",
-    //   platformProxy: {
-    //     enabled: true,
-    //     configPath: "wrangler.json",
-    //     persist: {
-    //       path: "./.cache/wrangler/v3",
-    //     },
-    //   },
-  }),
-  experimental: { session: true },
+  adapter: cloudflare(),
 });
