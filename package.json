@@ -20,7 +20,7 @@
     "dev:e2e": "astro dev --mode test"
   },
   "dependencies": {
-    "@astrojs/node": "^9.1.3",
+    "@astrojs/cloudflare": "12.5.1",
     "@astrojs/react": "4.2.2",
     "@astrojs/sitemap": "3.3.0",
     "@radix-ui/react-dialog": "^1.1.11",

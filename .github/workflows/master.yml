@@ -1,8 +1,6 @@
-name: Lint, Test and Build Master Branch
+name: Lint, Test, Build and Deploy Master Branch
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -16,11 +14,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
       
       - name: Run linting
         run: npm run lint
@@ -36,31 +34,50 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
       
       - name: Run tests
         run: npm test
 
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    name: Production Build
+    name: Deploy to Cloudflare Workers
     needs: [lint, test]
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: production
+      url: ${{ steps.deployment.outputs.url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.x
+          node-version-file: .nvmrc
           cache: 'npm'
-      
+
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
-      
+        run: npm ci
+
       - name: Build application
-        run: npm run build 
+        run: npm run build
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Deploy to Cloudflare Workers
+        id: deployment
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: '.'
+          command: deploy --minify 
