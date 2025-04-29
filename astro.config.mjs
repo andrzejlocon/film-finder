@@ -13,16 +13,25 @@ export default defineConfig({
   server: { port: 3000 },
   vite: {
     plugins: [tailwindcss()],
+    ssr: {
+      external: ["react-dom/server", "react-dom/client"],
+      noExternal: ["@astrojs/react"],
+    },
+    build: {
+      minify: false, // Helps with debugging
+    },
   },
   adapter: cloudflare({
-    //   imageService: "cloudflare",
-    //   platformProxy: {
-    //     enabled: true,
-    //     configPath: "wrangler.json",
-    //     persist: {
-    //       path: "./.cache/wrangler/v3",
-    //     },
-    //   },
+    imageService: "passthrough", // Use passthrough for better compatibility
+    platformProxy: {
+      enabled: false, // Disable for production
+    },
+    routes: {
+      extend: {
+        // Add any static assets that should be served directly
+        exclude: [{ pattern: "/assets/*" }],
+      },
+    },
   }),
   experimental: { session: true },
 });
