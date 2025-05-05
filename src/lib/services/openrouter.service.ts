@@ -1,13 +1,13 @@
+import { OPENROUTER_API_ENDPOINT, OPENROUTER_API_KEY } from "astro:env/server";
 import type {
-  ModelParameters,
-  RequestPayload,
-  ParsedResponse,
-  ServiceConfig,
-  RetryConfig,
   ErrorContext,
+  ModelParameters,
+  ParsedResponse,
+  RequestPayload,
+  RetryConfig,
+  ServiceConfig,
 } from "./openrouter.types";
-
-import { OpenRouterError, responseSchema, modelParametersSchema, requestPayloadSchema } from "./openrouter.types";
+import { modelParametersSchema, OpenRouterError, requestPayloadSchema, responseSchema } from "./openrouter.types";
 
 export class OpenRouterService {
   private readonly _apiClient: typeof fetch;
@@ -21,8 +21,8 @@ export class OpenRouterService {
   constructor(config?: Partial<ServiceConfig>) {
     // Initialize API client and configuration
     this._apiClient = fetch;
-    this._apiEndpoint = import.meta.env.OPENROUTER_API_ENDPOINT || "https://openrouter.ai/api/v1/chat/completions";
-    this._apiKey = import.meta.env.OPENROUTER_API_KEY;
+    this._apiEndpoint = OPENROUTER_API_ENDPOINT || "https://openrouter.ai/api/v1/chat/completions";
+    this._apiKey = OPENROUTER_API_KEY;
 
     if (!this._apiKey) {
       throw new OpenRouterError("OpenRouter API key is not configured", "MISSING_API_KEY");

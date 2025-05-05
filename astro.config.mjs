@@ -15,6 +15,8 @@ export default defineConfig({
     schema: {
       SUPABASE_URL: envField.string({ context: "server", access: "secret" }),
       SUPABASE_KEY: envField.string({ context: "server", access: "secret" }),
+      OPENROUTER_API_KEY: envField.string({ context: "server", access: "secret" }),
+      OPENROUTER_API_ENDPOINT: envField.string({ context: "server", access: "public" }),
     },
   },
   vite: {
@@ -25,6 +27,9 @@ export default defineConfig({
       alias: import.meta.env.PROD && {
         "react-dom/server": "react-dom/server.edge",
       },
+    },
+    ssr: {
+      external: ["crypto"],
     },
   },
   adapter: cloudflare(),
