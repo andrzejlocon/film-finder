@@ -16,6 +16,7 @@ export interface ServiceConfig {
 export const modelParametersSchema = z.object({
   temperature: z.number().min(0).max(2),
   top_p: z.number().min(0).max(1),
+  max_tokens: z.number().min(1).max(4096).optional(),
   frequency_penalty: z.number().min(-2).max(2).optional(),
   presence_penalty: z.number().min(-2).max(2).optional(),
   response_format: z
@@ -43,6 +44,7 @@ export const requestPayloadSchema = z.object({
   messages: z.array(chatMessageSchema).min(1),
   temperature: z.number().min(0).max(2),
   top_p: z.number().min(0).max(1),
+  max_tokens: z.number().min(1).max(4096).optional(),
   frequency_penalty: z.number().min(-2).max(2).optional(),
   presence_penalty: z.number().min(-2).max(2).optional(),
   response_format: z

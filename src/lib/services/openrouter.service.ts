@@ -28,15 +28,18 @@ export class OpenRouterService {
       throw new OpenRouterError("OpenRouter API key is not configured", "MISSING_API_KEY");
     }
 
+    console.log("OPENROUTER_API_ENDPOINT", this._apiEndpoint);
+    console.log("OPENROUTER_API_KEY", this._apiKey);
+
     // Set default configuration
     this._config = {
       retryConfig: {
-        maxAttempts: 3,
-        initialDelay: 1000,
-        maxDelay: 10000,
-        backoffFactor: 2,
+        maxAttempts: 5,
+        initialDelay: 500,
+        maxDelay: 8000,
+        backoffFactor: 1.5,
       },
-      timeout: 30000,
+      timeout: 45000,
       ...config,
     };
 
@@ -44,6 +47,7 @@ export class OpenRouterService {
     this._modelParameters = {
       temperature: 0.1,
       top_p: 0.6,
+      max_tokens: 2000,
       //   frequency_penalty: 0.0,
       //   presence_penalty: 0.0,
       response_format: {
@@ -96,6 +100,7 @@ export class OpenRouterService {
     const requestId = crypto.randomUUID();
     try {
       const payload = this._buildRequestPayload(message);
+      console.log("payload", payload);
 
       // Validate request payload
       const validationResult = requestPayloadSchema.safeParse(payload);
@@ -174,6 +179,8 @@ export class OpenRouterService {
         signal: controller.signal,
       });
 
+      console.log("response", response);
+
       if (!response.ok) {
         throw new OpenRouterError(`API request failed with status ${response.status}`, "API_REQUEST_FAILED", {
           timestamp: new Date().toISOString(),
@@ -201,6 +208,8 @@ export class OpenRouterService {
       );
     }
 
+    console.log("result", result.data);
+
     return result.data;
   }
 
@@ -216,6 +225,7 @@ export class OpenRouterService {
       try {
         return await operation();
       } catch (error) {
+        console.log("error", error);
         lastError = error as Error;
 
         if (error instanceof OpenRouterError) {
