@@ -10,7 +10,6 @@ import type {
 import { modelParametersSchema, OpenRouterError, requestPayloadSchema, responseSchema } from "./openrouter.types";
 
 export class OpenRouterService {
-  private readonly _apiClient: typeof fetch;
   private readonly _apiEndpoint: string;
   private readonly _apiKey: string;
   private readonly _config: ServiceConfig;
@@ -20,16 +19,12 @@ export class OpenRouterService {
 
   constructor(config?: Partial<ServiceConfig>) {
     // Initialize API client and configuration
-    this._apiClient = fetch;
     this._apiEndpoint = OPENROUTER_API_ENDPOINT || "https://openrouter.ai/api/v1/chat/completions";
     this._apiKey = OPENROUTER_API_KEY;
 
     if (!this._apiKey) {
       throw new OpenRouterError("OpenRouter API key is not configured", "MISSING_API_KEY");
     }
-
-    console.log("OPENROUTER_API_ENDPOINT", this._apiEndpoint);
-    console.log("OPENROUTER_API_KEY", this._apiKey);
 
     // Set default configuration
     this._config = {
@@ -168,7 +163,7 @@ export class OpenRouterService {
     const timeout = setTimeout(() => controller.abort(), this._config.timeout);
 
     try {
-      const response = await this._apiClient(this._apiEndpoint, {
+      const response = await fetch(this._apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
