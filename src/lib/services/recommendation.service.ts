@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import type { SupabaseClient } from "@/db/supabase.client.ts";
 import type { RecommendationCriteria, RecommendationResponseDTO, RecommendedFilmDTO } from "@/types.ts";
 import { recommendationCriteriaSchema } from "../schemas/recommendations.schema";
@@ -11,10 +10,15 @@ export class RecommendationService {
     this.openRouter = new OpenRouterService();
   }
 
-  private generateCriteriaHash(criteria: RecommendationCriteria | null): string {
+  private async generateCriteriaHash(criteria: RecommendationCriteria | null): Promise<string> {
     if (!criteria) return "";
     const criteriaString = JSON.stringify(criteria);
-    return crypto.createHash("md5").update(criteriaString).digest("hex");
+
+    // Use Web Crypto API
+    const msgBuffer = new TextEncoder().encode(criteriaString);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   private buildPrompt(criteria: RecommendationCriteria | null): string {
@@ -121,7 +125,7 @@ export class RecommendationService {
         .from("generation_logs")
         .insert({
           user_id: userId,
-          criteria_hash: this.generateCriteriaHash(criteria || null),
+          criteria_hash: await this.generateCriteriaHash(criteria || null),
           generation_duration: Date.now() - startTime,
           model: response.model,
           generated_count: recommendations.length,
@@ -143,7 +147,7 @@ export class RecommendationService {
       await this.supabase.from("generation_error_logs").insert({
         user_id: userId,
         error_message: error instanceof Error ? error.message : "Unknown error",
-        criteria_hash: this.generateCriteriaHash(criteria || null),
+        criteria_hash: await this.generateCriteriaHash(criteria || null),
         error_code: "GENERATION_ERROR",
         model: "openai/gpt-4o-mini",
       });
