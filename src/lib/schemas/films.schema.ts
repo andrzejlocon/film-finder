@@ -3,7 +3,6 @@ import type { FilmStatus } from "../../types";
 
 // Constants for validation
 const MIN_MOVIE_YEAR = 1887;
-const CURRENT_YEAR = new Date().getFullYear();
 const MAX_FILMS_PER_REQUEST = 100;
 
 // Film status validation
@@ -16,7 +15,7 @@ export const createFilmSchema = z.object({
     .number()
     .int("Year must be an integer")
     .min(MIN_MOVIE_YEAR, `Year must be ${MIN_MOVIE_YEAR} or later`)
-    .max(CURRENT_YEAR, "Year cannot be in the future"),
+    .refine((year) => year <= new Date().getFullYear(), "Year cannot be in the future"),
   description: z.string().min(1, "Description is required"),
   genres: z.array(z.string()).min(1, "At least one genre is required"),
   actors: z.array(z.string()).min(1, "At least one actor is required"),
