@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { FilmStatus } from "../../types";
+import type { FilmStatus } from "@/types";
 
 // Constants for validation
 const MIN_MOVIE_YEAR = 1887;
@@ -35,3 +35,24 @@ export const createFilmCommandSchema = z.object({
 // Type inference
 export type CreateFilmSchema = z.infer<typeof createFilmSchema>;
 export type CreateFilmCommandSchema = z.infer<typeof createFilmCommandSchema>;
+
+// Schema for GET /films query parameters
+export const getFilmsQuerySchema = z.object({
+  status: z.enum(["to-watch", "watched", "rejected"] as const).optional(),
+  page: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .optional()
+    .transform((val) => val ?? 1),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .optional()
+    .transform((val) => val ?? 10),
+  search: z.string().min(1).optional(),
+});
+
+export type GetFilmsQuerySchema = z.infer<typeof getFilmsQuerySchema>;

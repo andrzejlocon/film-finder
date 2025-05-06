@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CriteriaForm } from "./CriteriaForm";
+import { CriteriaForm } from "../CriteriaForm";
 import type { RecommendationCriteria } from "@/types";
 
 describe("CriteriaForm", () => {

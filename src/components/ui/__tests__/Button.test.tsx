@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { render } from "../../../test/helpers";
-import { Button } from "./button";
+import { render } from "../../../../test/helpers";
+import { Button } from "../button";
 
 describe("Button", () => {
   it("renders with correct content", () => {

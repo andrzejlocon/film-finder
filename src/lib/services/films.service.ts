@@ -1,6 +1,13 @@
-import type { CreateFilmInput, FilmDTO } from "../../types";
+import type { CreateFilmInput, FilmDTO, FilmStatus, PaginatedResponseDTO } from "../../types";
 import type { CreateFilmCommandSchema } from "../schemas/films.schema";
 import type { SupabaseClient } from "../../db/supabase.client";
+
+interface GetUserFilmsFilters {
+  status?: FilmStatus;
+  page?: number;
+  limit?: number;
+  search?: string;
+}
 
 export class FilmsService {
   constructor(private readonly supabase: SupabaseClient) {}
@@ -46,5 +53,48 @@ export class FilmsService {
     }
 
     return createdFilms as FilmDTO[];
+  }
+
+  /**
+   * Retrieves paginated list of user's films with optional filtering
+   * @param userId - The ID of the user whose films to retrieve
+   * @param filters - Optional filters for status, pagination and search
+   * @returns Paginated response with films and metadata
+   */
+  async getUserFilms(
+    userId: string,
+    { status, page = 1, limit = 10, search }: GetUserFilmsFilters = {}
+  ): Promise<PaginatedResponseDTO<FilmDTO>> {
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
+
+    // Start building the query
+    let query = this.supabase.from("user_films").select("*", { count: "exact" }).eq("user_id", userId);
+
+    // Apply optional filters
+    if (status) {
+      query = query.eq("status", status);
+    }
+
+    if (search) {
+      query = query.ilike("title", `%${search}%`);
+    }
+
+    // Apply pagination
+    query = query.range(offset, offset + limit - 1).order("created_at", { ascending: false });
+
+    // Execute the query
+    const { data: films, error, count } = await query;
+
+    if (error) {
+      throw new Error(`Failed to fetch films: ${error.message}`);
+    }
+
+    return {
+      data: films as FilmDTO[],
+      page,
+      limit,
+      total: count ?? 0,
+    };
   }
 }
