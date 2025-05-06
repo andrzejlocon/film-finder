@@ -212,7 +212,17 @@ export interface Database {
       };
     };
     Views: Record<never, never>;
-    Functions: Record<never, never>;
+    Functions: {
+      update_film_status: {
+        Args: {
+          p_film_id: number;
+          p_user_id: string;
+          p_new_status: string;
+          p_prev_status: string;
+        };
+        Returns: Database["public"]["Tables"]["user_films"]["Row"];
+      };
+    };
     Enums: Record<never, never>;
     CompositeTypes: Record<never, never>;
   };

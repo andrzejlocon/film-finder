@@ -56,3 +56,14 @@ export const getFilmsQuerySchema = z.object({
 });
 
 export type GetFilmsQuerySchema = z.infer<typeof getFilmsQuerySchema>;
+
+// Schema for POST /films/{filmId}/status request body
+export const updateStatusSchema = z.object({
+  new_status: filmStatusEnum,
+});
+
+// Schema for filmId path parameter
+export const filmIdSchema = z.coerce.number().int("Film ID must be an integer").positive("Film ID must be positive");
+
+export type UpdateStatusSchema = z.infer<typeof updateStatusSchema>;
+export type FilmIdSchema = z.infer<typeof filmIdSchema>;

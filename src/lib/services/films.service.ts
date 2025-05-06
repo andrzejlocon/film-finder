@@ -1,6 +1,6 @@
-import type { CreateFilmInput, FilmDTO, FilmStatus, PaginatedResponseDTO } from "../../types";
-import type { CreateFilmCommandSchema } from "../schemas/films.schema";
-import type { SupabaseClient } from "../../db/supabase.client";
+import type { CreateFilmInput, FilmDTO, FilmStatus, PaginatedResponseDTO } from "@/types.ts";
+import { createFilmCommandSchema, type CreateFilmCommandSchema } from "../schemas/films.schema";
+import type { SupabaseClient } from "@/db/supabase.client.ts";
 
 interface GetUserFilmsFilters {
   status?: FilmStatus;
@@ -19,28 +19,38 @@ export class FilmsService {
   private async checkForDuplicates(userId: string, films: CreateFilmInput[]): Promise<string[]> {
     const titles = films.map((film) => film.title);
 
-    const { data: existingFilms } = await this.supabase
+    const { data: existingFilms, error } = await this.supabase
       .from("user_films")
       .select("title")
       .eq("user_id", userId)
       .in("title", titles);
+
+    if (error) {
+      throw new Error(`Failed to check for duplicates: ${error.message}`);
+    }
 
     return existingFilms?.map((film) => film.title) ?? [];
   }
 
   /**
    * Creates multiple films for a user in a single transaction
-   * @throws Error if duplicate films are found
+   * @throws Error if duplicate films are found or validation fails
    */
   async createFilms(userId: string, command: CreateFilmCommandSchema): Promise<FilmDTO[]> {
+    // Validate input data
+    const validationResult = createFilmCommandSchema.safeParse(command);
+    if (!validationResult.success) {
+      throw new Error(`Invalid input data: ${validationResult.error.message}`);
+    }
+
     // Check for duplicates first
-    const duplicates = await this.checkForDuplicates(userId, command.films);
+    const duplicates = await this.checkForDuplicates(userId, validationResult.data.films);
     if (duplicates.length > 0) {
       throw new Error(`Following films already exist: ${duplicates.join(", ")}`);
     }
 
     // Prepare films data with user_id
-    const filmsToCreate = command.films.map((film) => ({
+    const filmsToCreate = validationResult.data.films.map((film) => ({
       ...film,
       user_id: userId,
     }));
@@ -96,5 +106,43 @@ export class FilmsService {
       limit,
       total: count ?? 0,
     };
+  }
+
+  /**
+   * Updates the status of a film and logs the change
+   * @param userId - The ID of the user who owns the film
+   * @param filmId - The ID of the film to update
+   * @param newStatus - The new status to set
+   * @returns The updated film
+   * @throws Error if film is not found or user is not authorized
+   */
+  async updateFilmStatus(userId: string, filmId: number, newStatus: FilmStatus): Promise<FilmDTO> {
+    // Get the current film to verify ownership and get current status
+    const { data: film, error: fetchError } = await this.supabase
+      .from("user_films")
+      .select("*")
+      .eq("id", filmId)
+      .eq("user_id", userId)
+      .single();
+
+    if (fetchError) {
+      throw new Error("Film not found or you are not authorized to update it");
+    }
+
+    const prevStatus = film.status;
+
+    // Start a transaction to update both film status and create a log entry
+    const { data: updatedFilm, error: updateError } = await this.supabase.rpc("update_film_status", {
+      p_film_id: filmId,
+      p_user_id: userId,
+      p_new_status: newStatus,
+      p_prev_status: prevStatus,
+    });
+
+    if (updateError) {
+      throw new Error(`Failed to update film status: ${updateError.message}`);
+    }
+
+    return updatedFilm as FilmDTO;
   }
 }

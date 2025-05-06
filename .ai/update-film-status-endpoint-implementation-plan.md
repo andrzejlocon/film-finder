@@ -43,9 +43,9 @@ Punkt końcowy umożliwia użytkownikowi zaktualizowanie statusu filmu ("to-watc
    - `export const prerender = false`.
    - Pobranie `userId` z `context.locals` (Supabase).
 2. **Walidacja**
-   - Zod schema dla `filmId` (ścieżka) i `new_status` (body).
+   - Zod schema dla `filmId` (ścieżka) i `new_status` (body) w `src/lib/schemas/films.schema.ts`.
 3. **Logika serwisowa**
-   - Funkcja `updateFilmStatus(userId: string, filmId: number, newStatus: FilmStatus)` w `src/lib/services/film.service.ts`:
+   - Funkcja `updateFilmStatus(userId: string, filmId: number, newStatus: FilmStatus)` w `src/lib/services/films.service.ts`:
      1. Pobierz rekord filmu: `from('user_films').select('*').eq('id', filmId).eq('user_id', userId).single()`.
      2. Jeśli brak wyniku → rzuć NotFoundError.
      3. W transakcji (jeśli wspierane) lub sekwencyjnie:
@@ -78,8 +78,8 @@ Punkt końcowy umożliwia użytkownikowi zaktualizowanie statusu filmu ("to-watc
 - Możliwość batchowania w przyszłości, jeśli zajdzie potrzeba masowych aktualizacji.
 
 ## 8. Kroki implementacji
-1. **Dodanie schematu Zod**: utworzyć `src/lib/schemas/film.ts` ze schematem `updateStatusSchema`.
-2. **Serwis**: dodać funkcję `updateFilmStatus` w `src/lib/services/film.service.ts`.
+1. **Dodanie schematu Zod**: utworzyć `src/lib/schemas/films.schema.ts` ze schematem `updateStatusSchema`.
+2. **Serwis**: dodać funkcję `updateFilmStatus` w `src/lib/services/films.service.ts`.
 3. **API Handler**: utworzyć `src/pages/api/films/[filmId]/status.ts`:
    - Wyłączyć prerendering.
    - Wczytać i zwalidować `filmId` oraz treść żądania.
