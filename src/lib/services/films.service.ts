@@ -145,4 +145,21 @@ export class FilmsService {
 
     return updatedFilm as FilmDTO;
   }
+
+  /**
+   * Deletes a film for a given user
+   * @param userId - The ID of the user who owns the film
+   * @param filmId - The ID of the film to delete
+   * @throws Error if film is not found or user is not authorized
+   */
+  async deleteFilm(userId: string, filmId: number): Promise<void> {
+    const { error } = await this.supabase.from("user_films").delete().eq("id", filmId).eq("user_id", userId);
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        throw new Error("Film not found or you are not authorized to delete it");
+      }
+      throw new Error(`Failed to delete film: ${error.message}`);
+    }
+  }
 }

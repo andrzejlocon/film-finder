@@ -22,6 +22,7 @@ type MockQueryBuilder = Partial<
   single: Mock;
   in: Mock;
   insert: Mock;
+  delete: Mock;
 };
 
 // Helper type for mocking Supabase client
@@ -79,6 +80,7 @@ describe("FilmsService", () => {
       single: vi.fn(),
       in: vi.fn(),
       insert: vi.fn(),
+      delete: vi.fn(),
     };
 
     // Setup chain calls to return the mock methods object
@@ -471,6 +473,57 @@ describe("FilmsService", () => {
 
       // Act & Assert
       await expect(service.createFilms(mockUserId, { films: [invalidFilm] })).rejects.toThrow(); // Exact error message will depend on Zod schema validation
+    });
+  });
+
+  describe("deleteFilm", () => {
+    const mockFilmId = 1;
+
+    it("should successfully delete a film", async () => {
+      // Arrange
+      queryBuilder.eq.mockImplementation(() => ({
+        ...queryBuilder,
+        data: null,
+        error: null,
+      }));
+
+      // Act
+      await service.deleteFilm(mockUserId, mockFilmId);
+
+      // Assert
+      expect(mockSupabase.from).toHaveBeenCalledWith("user_films");
+      expect(queryBuilder.delete).toHaveBeenCalled();
+      expect(queryBuilder.eq).toHaveBeenCalledWith("id", mockFilmId);
+      expect(queryBuilder.eq).toHaveBeenCalledWith("user_id", mockUserId);
+    });
+
+    it("should throw error when film is not found", async () => {
+      // Arrange
+      queryBuilder.eq.mockImplementation(() => ({
+        ...queryBuilder,
+        data: null,
+        error: { code: "PGRST116", message: "not found" },
+      }));
+
+      // Act & Assert
+      await expect(service.deleteFilm(mockUserId, mockFilmId)).rejects.toThrow(
+        "Film not found or you are not authorized to delete it"
+      );
+    });
+
+    it("should throw error on database failure", async () => {
+      // Arrange
+      const errorMessage = "Database error";
+      queryBuilder.eq.mockImplementation(() => ({
+        ...queryBuilder,
+        data: null,
+        error: { message: errorMessage },
+      }));
+
+      // Act & Assert
+      await expect(service.deleteFilm(mockUserId, mockFilmId)).rejects.toThrow(
+        `Failed to delete film: ${errorMessage}`
+      );
     });
   });
 });
