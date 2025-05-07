@@ -50,7 +50,7 @@ export function SkeletonLoader({ count = 3 }: SkeletonLoaderProps) {
             </div>
           </CardContent>
 
-          <CardFooter className="flex gap-2 justify-end border-t pt-4">
+          <CardFooter className="flex gap-2 sm:justify-start md:justify-center border-t pt-4">
             <Skeleton className="h-8 w-24" />
             <Skeleton className="h-8 w-24" />
             <Skeleton className="h-8 w-24" />
