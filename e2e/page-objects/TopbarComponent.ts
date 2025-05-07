@@ -46,7 +46,7 @@ export class TopbarComponent {
    * Checks if all navigation links are present for logged in user
    */
   async expectNavigationLinks() {
-    const expectedLinks = ["Recommendations", "Watchlist", "Profile"];
+    const expectedLinks = ["Recommendations", "Films", "Profile"];
     for (const link of expectedLinks) {
       await expect(this.navigationLinks.getByText(link)).toBeVisible();
     }
@@ -57,7 +57,7 @@ export class TopbarComponent {
    * @param section - The name of the section to navigate to
    * @param isMobile - Whether to use the mobile menu
    */
-  async navigateTo(section: "Recommendations" | "Watchlist" | "Profile", isMobile = false) {
+  async navigateTo(section: "Recommendations" | "Films" | "Profile", isMobile = false) {
     if (isMobile) {
       await this.mobileMenuButton.click();
     }
