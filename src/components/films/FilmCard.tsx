@@ -94,7 +94,7 @@ export function FilmCard({ film, onStatusChange, onDeleteRequest }: FilmCardProp
           onClick={() => onStatusChange(film.id, "to-watch")}
         >
           <Clock className="h-4 w-4" />
-          Do obejrzenia
+          Watch Later
         </Button>
         <Button
           variant={film.status === "watched" ? "default" : "outline"}
@@ -103,7 +103,7 @@ export function FilmCard({ film, onStatusChange, onDeleteRequest }: FilmCardProp
           onClick={() => onStatusChange(film.id, "watched")}
         >
           <Eye className="h-4 w-4" />
-          Obejrzane
+          Watched
         </Button>
         <Button
           variant={film.status === "rejected" ? "default" : "outline"}
@@ -112,7 +112,7 @@ export function FilmCard({ film, onStatusChange, onDeleteRequest }: FilmCardProp
           onClick={() => onStatusChange(film.id, "rejected")}
         >
           <X className="h-4 w-4" />
-          Odrzucone
+          Not for me
         </Button>
       </CardFooter>
     </Card>

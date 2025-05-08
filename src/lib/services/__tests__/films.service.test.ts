@@ -103,7 +103,7 @@ describe("FilmsService", () => {
     it("should fetch films with default pagination", async () => {
       // Arrange
       const expectedResponse = { data: mockFilms, count: mockFilms.length };
-      queryBuilder.order.mockResolvedValue(expectedResponse);
+      queryBuilder.range.mockResolvedValue(expectedResponse);
 
       // Act
       const result = await service.getUserFilms(mockUserId);
@@ -112,11 +112,13 @@ describe("FilmsService", () => {
       expect(mockSupabase.from).toHaveBeenCalledWith("user_films");
       expect(queryBuilder.select).toHaveBeenCalledWith("*", { count: "exact" });
       expect(queryBuilder.eq).toHaveBeenCalledWith("user_id", mockUserId);
-      expect(queryBuilder.range).toHaveBeenCalledWith(0, 9);
+      expect(queryBuilder.order).toHaveBeenCalledWith("created_at", { ascending: false });
+      expect(queryBuilder.order).toHaveBeenCalledWith("id", { ascending: false });
+      expect(queryBuilder.range).toHaveBeenCalledWith(0, 8);
       expect(result).toEqual({
         data: mockFilms,
         page: 1,
-        limit: 10,
+        limit: 9,
         total: mockFilms.length,
       });
     });
@@ -125,7 +127,7 @@ describe("FilmsService", () => {
       // Arrange
       const status = "watched";
       const filteredMockFilms = mockFilms.filter((film) => film.status === status);
-      queryBuilder.order.mockResolvedValue({
+      queryBuilder.range.mockResolvedValue({
         data: filteredMockFilms,
         count: filteredMockFilms.length,
       });
@@ -135,6 +137,8 @@ describe("FilmsService", () => {
 
       // Assert
       expect(queryBuilder.eq).toHaveBeenCalledWith("status", status);
+      expect(queryBuilder.order).toHaveBeenCalledWith("created_at", { ascending: false });
+      expect(queryBuilder.order).toHaveBeenCalledWith("id", { ascending: false });
       expect(result.data).toHaveLength(1);
       expect(result.data[0].status).toBe(status);
     });
@@ -143,7 +147,7 @@ describe("FilmsService", () => {
       // Arrange
       const search = "Test Film 1";
       const filteredMockFilms = mockFilms.filter((film) => film.title.includes(search));
-      queryBuilder.order.mockResolvedValue({
+      queryBuilder.range.mockResolvedValue({
         data: filteredMockFilms,
         count: filteredMockFilms.length,
       });
@@ -153,6 +157,8 @@ describe("FilmsService", () => {
 
       // Assert
       expect(queryBuilder.ilike).toHaveBeenCalledWith("title", `%${search}%`);
+      expect(queryBuilder.order).toHaveBeenCalledWith("created_at", { ascending: false });
+      expect(queryBuilder.order).toHaveBeenCalledWith("id", { ascending: false });
       expect(result.data).toHaveLength(1);
       expect(result.data[0].title).toBe(search);
     });
@@ -161,7 +167,7 @@ describe("FilmsService", () => {
       // Arrange
       const page = 2;
       const limit = 5;
-      queryBuilder.order.mockResolvedValue({
+      queryBuilder.range.mockResolvedValue({
         data: mockFilms,
         count: mockFilms.length,
       });
@@ -171,6 +177,8 @@ describe("FilmsService", () => {
 
       // Assert
       expect(queryBuilder.range).toHaveBeenCalledWith(5, 9);
+      expect(queryBuilder.order).toHaveBeenCalledWith("created_at", { ascending: false });
+      expect(queryBuilder.order).toHaveBeenCalledWith("id", { ascending: false });
       expect(result).toEqual({
         data: mockFilms,
         page,
@@ -182,7 +190,7 @@ describe("FilmsService", () => {
     it("should throw error when Supabase query fails", async () => {
       // Arrange
       const errorMessage = "Database error";
-      queryBuilder.order.mockResolvedValue({
+      queryBuilder.range.mockResolvedValue({
         data: null,
         error: new Error(errorMessage),
       });
@@ -193,7 +201,7 @@ describe("FilmsService", () => {
 
     it("should handle empty results", async () => {
       // Arrange
-      queryBuilder.order.mockResolvedValue({
+      queryBuilder.range.mockResolvedValue({
         data: [],
         count: 0,
       });
@@ -202,10 +210,12 @@ describe("FilmsService", () => {
       const result = await service.getUserFilms(mockUserId);
 
       // Assert
+      expect(queryBuilder.order).toHaveBeenCalledWith("created_at", { ascending: false });
+      expect(queryBuilder.order).toHaveBeenCalledWith("id", { ascending: false });
       expect(result).toEqual({
         data: [],
         page: 1,
-        limit: 10,
+        limit: 9,
         total: 0,
       });
     });

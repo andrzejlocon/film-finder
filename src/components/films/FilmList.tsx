@@ -56,7 +56,7 @@ export function FilmList({
   if (films.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">Nie znaleziono filmów pasujących do kryteriów.</p>
+        <p className="text-gray-500">No films found matching the criteria.</p>
       </div>
     );
   }

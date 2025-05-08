@@ -16,17 +16,17 @@ interface StatusConfig {
 
 const statusConfigs: Record<FilmStatus, StatusConfig> = {
   "to-watch": {
-    label: "Do obejrzenia",
+    label: "Watch Later",
     icon: <Clock className="h-4 w-4" />,
     className: "text-blue-600",
   },
   watched: {
-    label: "Obejrzane",
+    label: "Watched",
     icon: <Eye className="h-4 w-4" />,
     className: "text-green-600",
   },
   rejected: {
-    label: "Odrzucone",
+    label: "Not for me",
     icon: <X className="h-4 w-4" />,
     className: "text-red-600",
   },

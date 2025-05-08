@@ -73,13 +73,18 @@ export class FilmsService {
    */
   async getUserFilms(
     userId: string,
-    { status, page = 1, limit = 10, search }: GetUserFilmsFilters = {}
+    { status, page = 1, limit = 9, search }: GetUserFilmsFilters = {}
   ): Promise<PaginatedResponseDTO<FilmDTO>> {
     // Calculate offset for pagination
     const offset = (page - 1) * limit;
 
     // Start building the query
-    let query = this.supabase.from("user_films").select("*", { count: "exact" }).eq("user_id", userId);
+    let query = this.supabase
+      .from("user_films")
+      .select("*", { count: "exact" })
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: false });
 
     // Apply optional filters
     if (status) {
@@ -90,8 +95,8 @@ export class FilmsService {
       query = query.ilike("title", `%${search}%`);
     }
 
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1).order("created_at", { ascending: false });
+    // Apply pagination after all filters
+    query = query.range(offset, offset + limit - 1);
 
     // Execute the query
     const { data: films, error, count } = await query;

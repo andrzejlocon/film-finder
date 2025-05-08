@@ -5,7 +5,7 @@ import { FilmSearchInput } from "./FilmSearchInput";
 import { FilmList } from "./FilmList";
 import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useFilms } from "./hooks/useFilms";
+import { ITEMS_PER_PAGE, useFilms } from "./hooks/useFilms";
 
 interface FilmToDelete {
   id: number;
@@ -25,7 +25,7 @@ export function FilmManagementView() {
   // Load initial films
   useEffect(() => {
     fetchFilms({ status: selectedStatus, search: searchQuery, page: 1 });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchFilms, selectedStatus, searchQuery]);
 
   // Handlers
   const handleStatusChange = (status: FilmStatus) => {
@@ -74,10 +74,10 @@ export function FilmManagementView() {
           isLoading={isLoading}
           isLoadingMore={isLoadingMore}
           hasMore={hasMore}
-          onLoadMore={loadMoreFilms}
+          onLoadMore={() => loadMoreFilms(selectedStatus, searchQuery)}
           onFilmStatusChange={handleFilmStatusChange}
           onFilmDeleteRequest={handleDeleteRequest}
-          limitPerPage={10}
+          limitPerPage={ITEMS_PER_PAGE}
         />
 
         {filmToDelete && (

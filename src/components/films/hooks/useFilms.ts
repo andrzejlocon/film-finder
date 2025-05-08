@@ -7,7 +7,7 @@ interface FilmManagementFilters {
   page: number;
 }
 
-const ITEMS_PER_PAGE = 9;
+export const ITEMS_PER_PAGE = 9;
 
 export function useFilms() {
   const [films, setFilms] = useState<FilmDTO[]>([]);
@@ -44,43 +44,44 @@ export function useFilms() {
       });
 
       if (!response.ok) {
-        throw new Error("Wystąpił błąd podczas pobierania filmów");
+        throw new Error("An error occurred while fetching films");
       }
 
       const data: PaginatedResponseDTO<FilmDTO> = await response.json();
 
       setFilms((prevFilms) => (concatResults ? [...prevFilms, ...data.data] : data.data));
       setCurrentPage(filters.page);
-      setHasMore(data.data.length === ITEMS_PER_PAGE); // If we got less than limit, there are no more pages
+      setHasMore(data.data.length === ITEMS_PER_PAGE);
 
       return data;
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Wystąpił nieznany błąd");
+        setError("An unknown error occurred");
       }
       return null;
     } finally {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  }, []);
+  }, []); // Keep dependencies empty as all used functions (setters) are stable
 
-  const loadMoreFilms = useCallback(async () => {
-    if (isLoadingMore || !hasMore) return;
+  const loadMoreFilms = useCallback(
+    async (status: FilmStatus, search: string) => {
+      if (isLoadingMore || !hasMore) return;
 
-    const currentStatus = (films[0]?.status as FilmStatus) || "to-watch";
-
-    await fetchFilms(
-      {
-        status: currentStatus,
-        search: "",
-        page: currentPage + 1,
-      },
-      true
-    );
-  }, [currentPage, fetchFilms, films, hasMore, isLoadingMore]);
+      await fetchFilms(
+        {
+          status: status,
+          search: search,
+          page: currentPage + 1,
+        },
+        true
+      );
+    },
+    [currentPage, fetchFilms, hasMore, isLoadingMore]
+  );
 
   const updateFilmStatus = useCallback(async (filmId: number, newStatus: FilmStatus) => {
     try {
@@ -99,7 +100,7 @@ export function useFilms() {
       });
 
       if (!response.ok) {
-        throw new Error("Nie udało się zaktualizować statusu filmu");
+        throw new Error("Failed to update film status");
       }
 
       const updatedFilm: FilmDTO = await response.json();
@@ -111,7 +112,7 @@ export function useFilms() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Wystąpił nieznany błąd");
+        setError("An unknown error occurred");
       }
       return null;
     }
@@ -126,7 +127,7 @@ export function useFilms() {
       });
 
       if (!response.ok) {
-        throw new Error("Nie udało się usunąć filmu");
+        throw new Error("Failed to delete film");
       }
 
       setFilms((prevFilms) => prevFilms.filter((film) => film.id !== filmId));
@@ -135,7 +136,7 @@ export function useFilms() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Wystąpił nieznany błąd");
+        setError("An unknown error occurred");
       }
       return false;
     }

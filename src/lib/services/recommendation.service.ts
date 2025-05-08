@@ -73,24 +73,24 @@ export class RecommendationService {
     }
   }
 
-  private async filterExistingFilms(userId: string, recommendations: RecommendedFilmDTO[]): Promise<RecommendedFilmDTO[]> {
+  private async filterExistingFilms(
+    userId: string,
+    recommendations: RecommendedFilmDTO[]
+  ): Promise<RecommendedFilmDTO[]> {
     if (recommendations.length === 0) return [];
 
     // Get user's existing films
-    const { data: userFilms, error } = await this.supabase
-      .from("user_films")
-      .select("title")
-      .eq("user_id", userId);
+    const { data: userFilms, error } = await this.supabase.from("user_films").select("title").eq("user_id", userId);
 
     if (error) {
       throw new Error(`Failed to fetch user films: ${error.message}`);
     }
 
     // Create a Set of existing titles for faster lookups
-    const existingTitles = new Set(userFilms.map(film => film.title.toLowerCase()));
+    const existingTitles = new Set(userFilms.map((film) => film.title.toLowerCase()));
 
     // Filter out films that the user already has
-    return recommendations.filter(film => !existingTitles.has(film.title.toLowerCase()));
+    return recommendations.filter((film) => !existingTitles.has(film.title.toLowerCase()));
   }
 
   async getRecommendations(userId: string, criteria?: RecommendationCriteria): Promise<RecommendationResponseDTO> {
@@ -139,7 +139,7 @@ export class RecommendationService {
       }
 
       let recommendations = this.parseRecommendations(response.choices[0].message.content);
-      
+
       // Filter out films that the user already has
       recommendations = await this.filterExistingFilms(userId, recommendations);
 

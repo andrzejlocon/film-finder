@@ -51,7 +51,7 @@ export const getFilmsQuerySchema = z.object({
     .min(1)
     .max(100)
     .optional()
-    .transform((val) => val ?? 10),
+    .transform((val) => val ?? 9),
   search: z.string().min(1).optional(),
 });
 
