@@ -27,7 +27,7 @@ const userProps = user?.email ? { email: user.email } : null;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>FilmFinder | {title}</title>
   </head>
   <body>
     <Topbar client:load user={userProps} />
