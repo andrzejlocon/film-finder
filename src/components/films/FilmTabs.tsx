@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 interface FilmTabsProps {
   selectedStatus: FilmStatus;
   onStatusChange: (status: FilmStatus) => void;
+  totalCount: number;
 }
 
 interface StatusConfig {
@@ -32,21 +33,24 @@ const statusConfigs: Record<FilmStatus, StatusConfig> = {
   },
 };
 
-export function FilmTabs({ selectedStatus, onStatusChange }: FilmTabsProps) {
+export function FilmTabs({ selectedStatus, onStatusChange, totalCount }: FilmTabsProps) {
   return (
-    <Tabs value={selectedStatus} onValueChange={(value) => onStatusChange(value as FilmStatus)}>
-      <TabsList>
-        {(Object.entries(statusConfigs) as [FilmStatus, StatusConfig][]).map(([status, config]) => (
-          <TabsTrigger
-            key={status}
-            value={status}
-            className={cn("min-w-[120px] flex items-center gap-2", selectedStatus === status && config.className)}
-          >
-            {config.icon}
-            {config.label}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </Tabs>
+    <div className="flex items-center gap-4">
+      <Tabs value={selectedStatus} onValueChange={(value) => onStatusChange(value as FilmStatus)}>
+        <TabsList>
+          {(Object.entries(statusConfigs) as [FilmStatus, StatusConfig][]).map(([status, config]) => (
+            <TabsTrigger
+              key={status}
+              value={status}
+              className={cn("min-w-[120px] flex items-center gap-2", selectedStatus === status && config.className)}
+            >
+              {config.icon}
+              {config.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+      <span className="text-sm text-muted-foreground">Results: {totalCount}</span>
+    </div>
   );
 }

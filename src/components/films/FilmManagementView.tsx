@@ -19,8 +19,18 @@ export function FilmManagementView() {
   const [filmToDelete, setFilmToDelete] = useState<FilmToDelete | null>(null);
 
   // Custom hook for films management
-  const { films, isLoading, isLoadingMore, error, hasMore, fetchFilms, loadMoreFilms, updateFilmStatus, deleteFilm } =
-    useFilms();
+  const {
+    films,
+    isLoading,
+    isLoadingMore,
+    error,
+    hasMore,
+    totalCount,
+    fetchFilms,
+    loadMoreFilms,
+    updateFilmStatus,
+    deleteFilm,
+  } = useFilms();
 
   // Load initial films
   useEffect(() => {
@@ -59,7 +69,7 @@ export function FilmManagementView() {
 
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <FilmTabs selectedStatus={selectedStatus} onStatusChange={handleStatusChange} />
+          <FilmTabs selectedStatus={selectedStatus} onStatusChange={handleStatusChange} totalCount={totalCount} />
           <FilmSearchInput searchQuery={searchQuery} onSearchQueryChange={handleSearchChange} />
         </div>
 

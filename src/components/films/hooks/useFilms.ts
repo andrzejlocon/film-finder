@@ -16,6 +16,7 @@ export function useFilms() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
 
   const fetchFilms = useCallback(async (filters: FilmManagementFilters, concatResults = false) => {
     try {
@@ -52,6 +53,7 @@ export function useFilms() {
       setFilms((prevFilms) => (concatResults ? [...prevFilms, ...data.data] : data.data));
       setCurrentPage(filters.page);
       setHasMore(data.data.length === ITEMS_PER_PAGE);
+      setTotalCount(data.total);
 
       return data;
     } catch (err) {
@@ -148,6 +150,7 @@ export function useFilms() {
     isLoadingMore,
     error,
     hasMore,
+    totalCount,
     fetchFilms,
     loadMoreFilms,
     updateFilmStatus,
