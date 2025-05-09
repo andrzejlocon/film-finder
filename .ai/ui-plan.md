@@ -40,7 +40,7 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 - **Ścieżka widoku:** /films
 - **Główny cel:** Przeglądanie i zarządzanie filmami zapisanymi przez użytkownika w trzech kategoriach: "Do obejrzenia", "Obejrzane", "Odrzucone".
 - **Kluczowe informacje:** Wyświetlenie kart filmowych z tytułem, rokiem produkcji, krótkim opisem, gatunkiem oraz informacjami o aktorach i reżyserze.
-- **Kluczowe komponenty widoku:** Lista kart filmowych, prosta wyszukiwarka tekstowa, infinite scroll z mechanizmem ładowania skeletonami, możliwość zmiany statusu filmów bez dodatkowego potwierdzenia.
+- **Kluczowe komponenty widoku:** Lista kart filmowych, prosta wyszukiwarka tekstowa, infinite scroll z mechanizmem ładowania skeletonami, możliwość zmiany statusu filmów bez dodatkowego potwierdzenia, usunięcie filmu z potwierdzeniem.
 - **UX, dostępność i względy bezpieczeństwa:** Szybki dostęp do informacji, intuicyjna zmiana statusu filmu, uwzględnienie dynamicznych aktualizacji list; wsparcie dla osób z ograniczeniami wzroku (np. odpowiednie kontrasty, aria-labels).
 
 ## 3. Mapa podróży użytkownika
@@ -53,7 +53,7 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
    - Uzupełnia kryteria wyszukiwania lub korzysta z opcji "Uzupełnij z profilu".
    - Klika przycisk "Rekomendowane filmy" i otrzymuje listę filmowych kart z wynikami rekomendacji.
    - Może zmienić status filmu bezpośrednio z widoku rekomendacji, zmiany potwierdza przyciskiem "Zapisz rekomendacje".
-4. Alternatywnie, użytkownik może przejść do ekranu wcześniej zapisanych rekomendacji list filmów (/films) za pośrednictwem topbara, aby zarządzać filmami (zmiana statusu bez potwierdzenia, wyszukiwanie, infinite scroll).
+4. Alternatywnie, użytkownik może przejść do ekranu wcześniej zapisanych rekomendacji list filmów (/films) za pośrednictwem topbara, aby zarządzać filmami (zmiana statusu bez potwierdzenia, usuwanie filmu z potwierdzeniem, wyszukiwanie, infinite scroll).
 5. Globalna nawigacja umożliwia szybkie przejście między widokami: autentykacja, profil, rekomendacje, lista filmów oraz opcje wylogowania.
 
 ## 4. Układ i struktura nawigacji
@@ -70,6 +70,6 @@ Aplikacja FilmFinder będzie oparta o Astro, React, Tailwind CSS oraz Shadcn/ui.
 - **Karty filmowe:** Reprezentacja wyników rekomendacji i list filmów; zawierają wszystkie kluczowe informacje o filmie oraz umożliwiają zmianę statusu.
 - **Skeleton Loaders:** Mechanizm ładowania treści przy infinite scroll, poprawiający doświadczenie użytkownika.
 - **Toast/Alert System:** Globalny system powiadomień o sukcesach i błędach.
-- **Modal Potwierdzenia:** Używany przy operacjach krytycznych, takich jak usunięcie konta.
+- **Modal Potwierdzenia:** Używany przy operacjach krytycznych, takich jak usunięcie konta, usunięcie filmu.
 - **Token Input/Chips:** Umożliwiają dynamiczne wprowadzanie wielu wartości w formularzach (np. dla aktorów, reżyserów, gatunków).
 - **React Context i Hooki:** Początkowa implementacja zarządzania stanem aplikacji, pozwalająca na synchronizację danych z API.

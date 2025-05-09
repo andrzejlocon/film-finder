@@ -46,8 +46,9 @@ Punkt końcowy umożliwia generowanie rekomendacji filmowych przy użyciu AI. U�
 3. Jeśli `criteria` nie zostały przekazane, system pobiera preferencje użytkownika z tabeli `user_preferences`.
 4. Logika generowania rekomendacji jest wyodrębniona do serwisu (np. `recommendation.service`).
 5. Serwis wywołuje zewnętrzne API AI, aby uzyskać rekomendacje na podstawie przekazanych kryteriów lub preferencji.
-6. Wyniki generacji są zapisywane w tabeli `generation_logs`; w przypadku błędów odpowiedni wpis trafia do `generation_error_logs`.
-7. System zwraca odpowiedź 200 OK wraz z listą rekomendacji oraz metadanymi.
+6. Po otrzymaniu rekomendacji, sprawdzane jest czy użytkownik już posiada dany film w swojej kolekcji. Jeśli tak, film jest usuwany z listy rekomendacji.
+7. Wyniki generacji są zapisywane w tabeli `generation_logs`; w przypadku błędów odpowiedni wpis trafia do `generation_error_logs`.
+8. System zwraca odpowiedź 200 OK wraz z przefiltrowaną listą rekomendacji oraz metadanymi.
 
 ## 6. Względy bezpieczeństwa
 
@@ -68,6 +69,7 @@ Punkt końcowy umożliwia generowanie rekomendacji filmowych przy użyciu AI. U�
 - Użycie asynchronicznego przetwarzania przy wywołaniu API AI, aby nie blokować głównego wątku.
 - Możliwość zastosowania cache'owania wyników dla identycznych kryteriów, aby ograniczyć liczbę wywołań API AI.
 - Optymalizacja zapytań do bazy danych i użycie indeksów na kluczowych polach.
+- Wykorzystanie Set dla szybkiego wyszukiwania duplikatów filmów, które użytkownik już posiada.
 
 ## 9. Etapy wdrożenia
 
@@ -75,6 +77,7 @@ Punkt końcowy umożliwia generowanie rekomendacji filmowych przy użyciu AI. U�
 2. Implementacja serwisu `recommendation.service`:
    - Pobranie kryteriów z żądania lub preferencji użytkownika.
    - Integracja z AI API do generowania rekomendacji.
+   - Filtrowanie wynikowych rekomendacji, usuwając filmy, które już znajdują się w kolekcji użytkownika.
    - Rejestracja wyników w tabeli `generation_logs` oraz błędów w `generation_error_logs`.
 3. Implementacja middleware do obsługi uwierzytelniania użytkownika poprzez Supabase Auth.
 4. Stworzenie endpointu POST `/recommendations` w katalogu `src/pages/api`:

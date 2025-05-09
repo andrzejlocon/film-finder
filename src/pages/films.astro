@@ -1,0 +1,11 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { FilmManagementView } from "@/components/films/FilmManagementView";
+
+// This page requires authentication (handled by middleware)
+export const prerender = false;
+---
+
+<Layout title="Your Films">
+  <FilmManagementView client:load />
+</Layout>

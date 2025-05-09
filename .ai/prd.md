@@ -127,6 +127,7 @@ Kryteria akceptacji:
 - Zmiana statusu jest zapisywana z danymi: identyfikator filmu, identyfikator użytkownika, poprzedni status, nowy status, data zmiany.
 - Karty ładują się dynamicznie dzięki mechanizmowi infinite scroll.
 - Użytkownik może używać prostej wyszukiwarki tekstowej do przeszukiwania listy.
+- Użytkownik może usunąć film potwierdzając wcześniej operację
 
 ID: US-008
 Tytuł: Bezpieczny dostęp i autoryzacja

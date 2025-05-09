@@ -20,7 +20,7 @@ export function Topbar({ user, className }: TopbarProps) {
   const navigationLinks = user
     ? [
         { href: "/recommendations", label: "Recommendations" },
-        { href: "/watchlist", label: "Watchlist" },
+        { href: "/films", label: "Films" },
         { href: "/profile", label: "Profile" },
       ]
     : [];

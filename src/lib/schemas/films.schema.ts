@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { FilmStatus } from "../../types";
+import type { FilmStatus } from "@/types";
 
 // Constants for validation
 const MIN_MOVIE_YEAR = 1887;
@@ -35,3 +35,35 @@ export const createFilmCommandSchema = z.object({
 // Type inference
 export type CreateFilmSchema = z.infer<typeof createFilmSchema>;
 export type CreateFilmCommandSchema = z.infer<typeof createFilmCommandSchema>;
+
+// Schema for GET /films query parameters
+export const getFilmsQuerySchema = z.object({
+  status: z.enum(["to-watch", "watched", "rejected"] as const).optional(),
+  page: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .optional()
+    .transform((val) => val ?? 1),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .optional()
+    .transform((val) => val ?? 9),
+  search: z.string().min(1).optional(),
+});
+
+export type GetFilmsQuerySchema = z.infer<typeof getFilmsQuerySchema>;
+
+// Schema for POST /films/{filmId}/status request body
+export const updateStatusSchema = z.object({
+  new_status: filmStatusEnum,
+});
+
+// Schema for filmId path parameter
+export const filmIdSchema = z.coerce.number().int("Film ID must be an integer").positive("Film ID must be positive");
+
+export type UpdateStatusSchema = z.infer<typeof updateStatusSchema>;
+export type FilmIdSchema = z.infer<typeof filmIdSchema>;

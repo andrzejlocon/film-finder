@@ -73,6 +73,26 @@ export class RecommendationService {
     }
   }
 
+  private async filterExistingFilms(
+    userId: string,
+    recommendations: RecommendedFilmDTO[]
+  ): Promise<RecommendedFilmDTO[]> {
+    if (recommendations.length === 0) return [];
+
+    // Get user's existing films
+    const { data: userFilms, error } = await this.supabase.from("user_films").select("title").eq("user_id", userId);
+
+    if (error) {
+      throw new Error(`Failed to fetch user films: ${error.message}`);
+    }
+
+    // Create a Set of existing titles for faster lookups
+    const existingTitles = new Set(userFilms.map((film) => film.title.toLowerCase()));
+
+    // Filter out films that the user already has
+    return recommendations.filter((film) => !existingTitles.has(film.title.toLowerCase()));
+  }
+
   async getRecommendations(userId: string, criteria?: RecommendationCriteria): Promise<RecommendationResponseDTO> {
     const startTime = Date.now();
 
@@ -118,7 +138,10 @@ export class RecommendationService {
         throw new Error("Invalid response format from OpenRouter");
       }
 
-      const recommendations = this.parseRecommendations(response.choices[0].message.content);
+      let recommendations = this.parseRecommendations(response.choices[0].message.content);
+
+      // Filter out films that the user already has
+      recommendations = await this.filterExistingFilms(userId, recommendations);
 
       // Log the generation
       const { data: generationLog, error: logError } = await this.supabase

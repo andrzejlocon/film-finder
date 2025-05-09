@@ -82,7 +82,7 @@ Cele szczegółowe obejmują:
 - Testowanie infrastruktury dostawców (Supabase, OpenRouter) pod kątem dostępności i wydajności.
 - Szczegółowe testy penetracyjne (mogą być przeprowadzone osobno, jeśli wymagane).
 - Testowanie strony `Welcome.astro` (niski priorytet, strona nie jest docelowo używana).
-- Funkcjonalności niezaimplementowane (np. pełny widok profilu użytkownika, edycja preferencji, widok Watchlisty, pełne API dla preferencji `/api/preferences` - POST/PUT).
+- Funkcjonalności niezaimplementowane (np. pełny widok profilu użytkownika, edycja preferencji, widok filmów, pełne API dla preferencji `/api/preferences` - POST/PUT).
 
 ## 3. Typy Testów do Przeprowadzenia
 

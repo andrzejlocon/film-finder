@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { YearPicker } from "./year-picker";
+import { YearPicker } from "../year-picker";
 import * as React from "react";
 
 // Mock constants from the component
