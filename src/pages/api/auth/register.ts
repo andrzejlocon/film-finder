@@ -23,6 +23,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const { data, error } = await supabase.auth.signUp({
       email: validatedData.email,
       password: validatedData.password,
+      options: {
+        emailRedirectTo: `https://film-finder.pages.dev/login`, // FIXME: remove hardcoded redirect url
+      },
     });
 
     if (error) {
