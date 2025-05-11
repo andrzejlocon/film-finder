@@ -21,7 +21,7 @@ export function Topbar({ user, className }: TopbarProps) {
     ? [
         { href: "/recommendations", label: "Recommendations" },
         { href: "/films", label: "Films" },
-        { href: "/profile", label: "Profile" },
+        // { href: "/profile", label: "Profile" },
       ]
     : [];
 

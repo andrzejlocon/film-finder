@@ -166,7 +166,7 @@ export function CriteriaForm({
 
       {/* Action Buttons */}
       <div className="flex gap-4 pt-4">
-        <Button variant="outline" onClick={onFillFromProfile} disabled={isLoading}>
+        <Button variant="outline" onClick={onFillFromProfile} disabled={true}>
           Fill from Profile
         </Button>
         <Button onClick={onGenerateRecommendations} disabled={isLoading || yearErrors.length > 0}>
