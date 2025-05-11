@@ -6,18 +6,15 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-interface RegisterFormProps {
-  onSubmit?: (email: string, password: string, confirmPassword: string) => void;
-  isLoading?: boolean;
-  error?: string;
-}
-
-export function RegisterForm({ onSubmit, isLoading, error }: RegisterFormProps) {
+export function RegisterForm() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [validationErrors, setValidationErrors] = useState<{
     password?: string;
@@ -39,10 +36,34 @@ export function RegisterForm({ onSubmit, isLoading, error }: RegisterFormProps) 
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      onSubmit?.(formData.email, formData.password, formData.confirmPassword);
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+
+      // Redirect to recommendations page on success
+      window.location.href = "/recommendations";
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -1,8 +1,13 @@
 ---
 import AuthLayout from "@/layouts/AuthLayout.astro";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import { handleAuthPageRedirect } from "@/lib/auth";
 
+// Disable static generation for this page
 export const prerender = false;
+
+const redirectResponse = await handleAuthPageRedirect(Astro);
+if (redirectResponse) return redirectResponse;
 ---
 
 <AuthLayout title="Create account - FilmFinder">
